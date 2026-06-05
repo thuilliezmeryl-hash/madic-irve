@@ -44,9 +44,9 @@ export default function ParkingPublicPage() {
         />
 
         <LomSimulator defaultType="public-existant" />
+        <Products />
         <RevenueSimulator />
 
-        <Products />
         <Solar />
         <Contact />
       </main>

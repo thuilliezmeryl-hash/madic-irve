@@ -15,7 +15,7 @@ import { Chevron } from "./icons";
  */
 
 const MODELS = [
-  { id: "walbox", name: "WalBox", price: 7000, points: 1, resale: 0.42, kwh: 20, perDay: 2, minDay: 1, maxDay: 3 },
+  { id: "walbox", name: "WalBox", price: 4000, points: 1, resale: 0.42, kwh: 20, perDay: 2, minDay: 1, maxDay: 3 },
   { id: "22gl", name: "22GL", price: 12000, points: 2, resale: 0.42, kwh: 20, perDay: 2, minDay: 1, maxDay: 2 },
   { id: "pulse2080", name: "Pulse 20-80", price: 30000, points: 2, resale: 0.69, kwh: 55, perDay: 3, minDay: 1, maxDay: 20 },
   { id: "pulse400", name: "Pulse 400", price: 150000, points: 2, resale: 0.69, kwh: 55, perDay: 4, minDay: 1, maxDay: 20 },
@@ -58,7 +58,6 @@ export default function RevenueSimulator() {
   const [kwh, setKwh] = useState(base.kwh);
   const [perDay, setPerDay] = useState(base.perDay);
   const [buyPrice, setBuyPrice] = useState(0.21);
-  const [unitPrice, setUnitPrice] = useState(base.price);
 
   const selectModel = (id) => {
     const m = MODELS.find((x) => x.id === id);
@@ -66,7 +65,6 @@ export default function RevenueSimulator() {
     setResale(m.resale);
     setKwh(m.kwh);
     setPerDay(m.perDay);
-    setUnitPrice(m.price);
   };
 
   const r = useMemo(() => {
@@ -76,7 +74,7 @@ export default function RevenueSimulator() {
     const caYear = kwhYear * (Number(resale) || 0);
     const costYear = kwhYear * (Number(buyPrice) || 0);
     const marginYear = caYear - costYear;
-    const capex = n * (Number(unitPrice) || 0);
+    const capex = n * base.price;
     const roi = marginYear > 0 ? capex / marginYear : Infinity;
     return {
       pts: n * pts,
@@ -87,7 +85,7 @@ export default function RevenueSimulator() {
       capex,
       roi,
     };
-  }, [qty, resale, kwh, perDay, buyPrice, unitPrice, base.points]);
+  }, [qty, resale, kwh, perDay, buyPrice, base.points, base.price]);
 
   return (
     <section id="simulateur-ca" className="scroll-mt-24 bg-[#fafbfc] py-20 md:py-28" aria-labelledby="simca-title">
@@ -133,7 +131,6 @@ export default function RevenueSimulator() {
                 <NumField label="Prix de revente" value={resale} onChange={setResale} suffix="€/kWh" step="0.01" />
                 <NumField label="kWh par charge" value={kwh} onChange={setKwh} suffix="kWh" />
                 <NumField label="Prix d'achat élec." value={buyPrice} onChange={setBuyPrice} suffix="€/kWh" step="0.01" />
-                <NumField label="Prix borne installée" value={unitPrice} onChange={setUnitPrice} suffix="€" step="100" />
               </div>
 
               {/* Curseur charges/jour/point borné par modèle */}
