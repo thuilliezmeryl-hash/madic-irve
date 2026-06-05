@@ -61,16 +61,16 @@ function ProductCard({ p }) {
         </span>
       )}
 
-      <div className="relative h-52 overflow-hidden bg-gradient-to-b from-[#f6f7f9] to-[#eaedf1]">
+      <div className="relative h-40 overflow-hidden bg-gradient-to-b from-[#f6f7f9] to-[#eaedf1]">
         <div className="absolute inset-0 grain opacity-40" />
-        <div className="relative mx-auto h-full w-40 transition-transform duration-500 group-hover:scale-105">
+        <div className="relative mx-auto h-full w-32 transition-transform duration-500 group-hover:scale-105">
           <Art />
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-madic-red">{p.tag}</p>
-        <h3 className="mt-1 text-2xl font-extrabold tracking-tight text-[#16202c]">{p.name}</h3>
+      <div className="flex flex-1 flex-col p-5">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-madic-red">{p.tag}</p>
+        <h3 className="mt-1 text-xl font-extrabold tracking-tight text-[#16202c]">{p.name}</h3>
         <p className="mt-1 text-sm font-bold text-madic-grey-dark">{p.power}</p>
 
         <ul className="mt-4 space-y-2">
@@ -115,7 +115,7 @@ export default function Products() {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {products.map((p) => (
             <ProductCard key={p.name} p={p} />
           ))}

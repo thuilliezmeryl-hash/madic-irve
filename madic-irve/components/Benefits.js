@@ -1,4 +1,5 @@
 import { benefitIcons } from "./icons";
+import OrigineFranceGarantie from "./OrigineFranceGarantie";
 
 const benefits = [
   { title: "Étude énergétique", desc: "Dimensionnement et analyse de votre site avant tout déploiement." },
@@ -9,7 +10,6 @@ const benefits = [
   { title: "Facturation automatisée", desc: "Refacturation et reporting sans saisie manuelle." },
   { title: "Conformité réglementaire", desc: "Comptage MID, normes IRVE et obligations respectées." },
   { title: "Accompagnement Advenir", desc: "Optimisation de vos subventions et primes à l'installation." },
-  { title: "Fabrication française", desc: "Bornes conçues et fabriquées en France, labellisées Origine France Garantie." },
 ];
 
 function BenefitCard({ title, desc, index }) {
@@ -35,15 +35,21 @@ export default function Benefits() {
   return (
     <section id="benefices" className="scroll-mt-24 bg-white py-20 md:py-28" aria-labelledby="benefits-title">
       <div className="mx-auto max-w-content px-5 md:px-8">
-        <div className="reveal max-w-2xl">
-          <p className="section-label text-madic-red">Notre valeur ajoutée</p>
-          <h2 id="benefits-title" className="mt-3 text-3xl font-extrabold tracking-tight text-[#16202c] md:text-4xl">
-            Pourquoi choisir MADIC ?
-          </h2>
-          <p className="mt-4 text-madic-grey-dark">
-            Un interlocuteur unique pour l'ensemble du cycle de vie de votre infrastructure,
-            de l'étude initiale à l'exploitation quotidienne.
-          </p>
+        <div className="reveal flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+          <div className="max-w-2xl">
+            <p className="section-label text-madic-red">Notre valeur ajoutée</p>
+            <h2 id="benefits-title" className="mt-3 text-3xl font-extrabold tracking-tight text-[#16202c] md:text-4xl">
+              Pourquoi choisir MADIC ?
+            </h2>
+            <p className="mt-4 text-madic-grey-dark">
+              Un interlocuteur unique pour l'ensemble du cycle de vie de votre infrastructure,
+              de l'étude initiale à l'exploitation quotidienne. Nos bornes sont conçues et
+              fabriquées en France, labellisées Origine France Garantie.
+            </p>
+          </div>
+          <div className="shrink-0">
+            <OrigineFranceGarantie className="h-32 w-32 md:h-40 md:w-40" />
+          </div>
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

@@ -4,7 +4,7 @@ import { Chevron } from "./icons";
 const stats = [
   { value: "+50 ans", label: "d'expertise énergie" },
   { value: "France", label: "couverture nationale" },
-  { value: "3 → 400 kW", label: "puissances de recharge" },
+  { value: "3 → 720 kW", label: "puissances de recharge" },
 ];
 
 export default function Hero() {
@@ -44,17 +44,18 @@ export default function Hero() {
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a
-              href="#contact"
+              href="/parking-public"
               className="group inline-flex items-center justify-center gap-2 rounded-full bg-madic-red px-7 py-4 text-base font-bold text-white shadow-xl shadow-madic-red/30 transition-all hover:scale-[1.03] hover:bg-madic-red-dark"
             >
-              Obtenir mon étude gratuite
+              Parking recevant du public
               <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </a>
             <a
-              href="#solutions"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-7 py-4 text-base font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10"
+              href="/parking-prive-flotte"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/25 bg-white/5 px-7 py-4 text-base font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/10"
             >
-              Découvrir nos solutions
+              Parking privatif &amp; flotte
+              <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </a>
           </div>
 

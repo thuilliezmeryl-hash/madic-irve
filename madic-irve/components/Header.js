@@ -2,16 +2,15 @@
 import { useState, useEffect } from "react";
 import Logo from "./Logo";
 
-const links = [
-  { href: "#solutions", label: "Solutions" },
-  { href: "#benefices", label: "Pourquoi MADIC" },
-  { href: "#reglementation", label: "Réglementation" },
-  { href: "#photovoltaique", label: "Photovoltaïque" },
-  { href: "#flotte", label: "Gestion de flotte" },
-  { href: "#roi", label: "ROI" },
+const defaultLinks = [
+  { href: "/#solutions", label: "Solutions" },
+  { href: "/#benefices", label: "Pourquoi MADIC" },
+  { href: "/parking-public", label: "Parking public" },
+  { href: "/parking-prive-flotte", label: "Privatif & flotte" },
+  { href: "/#photovoltaique", label: "Photovoltaïque" },
 ];
 
-export default function Header() {
+export default function Header({ links = defaultLinks }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -31,7 +30,7 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex max-w-content items-center justify-between px-5 py-3.5 md:px-8">
-        <a href="#top" className="flex items-center" aria-label="MADIC — Accueil">
+        <a href="/" className="flex items-center" aria-label="MADIC — Accueil">
           <Logo variant={scrolled ? "color" : "white"} className="text-[34px]" />
         </a>
 

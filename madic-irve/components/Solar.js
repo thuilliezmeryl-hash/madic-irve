@@ -3,6 +3,7 @@ import { Chevron, Icons } from "./icons";
 const points = [
   "Ombrières photovoltaïques",
   "Autoconsommation",
+  "Stockage par batterie sur site",
   "Réinjection réseau",
   "Pilotage énergétique",
   "Réduction des coûts d'exploitation",
@@ -12,6 +13,7 @@ function FlowDiagram() {
   const steps = [
     { label: "Panneaux solaires", sub: "Ombrières PV", icon: Icons.solar },
     { label: "Production", sub: "Énergie verte", icon: Icons.bolt },
+    { label: "Stockage", sub: "Batterie sur site", icon: Icons.battery },
     { label: "Bornes", sub: "Recharge IRVE", icon: Icons.install },
     { label: "Véhicules", sub: "Flotte électrique", icon: Icons.fleet },
   ];
@@ -54,11 +56,11 @@ export default function Solar() {
         <div className="reveal">
           <p className="section-label text-madic-red">Énergie &amp; recharge</p>
           <h2 id="solar-title" className="mt-3 text-3xl font-extrabold tracking-tight text-white md:text-4xl">
-            Associez recharge et production solaire
+            Production solaire, stockage et recharge
           </h2>
           <p className="mt-4 max-w-lg text-white/70">
             Couvrez vos parkings d'ombrières photovoltaïques et alimentez vos bornes
-            avec votre propre énergie. Autoconsommez, réinjectez le surplus et pilotez
+            avec votre propre énergie. Autoconsommez, stockez l'énergie produite et pilotez
             l'ensemble pour réduire durablement vos coûts.
           </p>
 
@@ -70,6 +72,21 @@ export default function Solar() {
               </li>
             ))}
           </ul>
+
+          <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-madic-red/15 text-madic-red">
+                <Icons.battery />
+              </span>
+              <p className="text-sm font-bold text-white">Stockage d'énergie sur site</p>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-white/70">
+              Stockez par batterie l'énergie solaire non consommée pour la restituer au
+              moment voulu : vers vos bornes de recharge lors des pics de demande, ou vers
+              votre bâtiment, vos bureaux et votre magasin. Vous maximisez votre
+              autoconsommation et lissez votre puissance souscrite.
+            </p>
+          </div>
         </div>
 
         <div className="reveal">

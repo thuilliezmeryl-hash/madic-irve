@@ -2,40 +2,57 @@ import { Chevron, Icons } from "./icons";
 
 const volets = [
   {
+    id: "public",
     icon: Icons.building,
     title: "Parkings publics et parkings d'entreprise",
     intro:
-      "La loi LOM impose l'équipement progressif des parkings en infrastructures de recharge.",
+      "La loi LOM impose l'équipement progressif des parkings en infrastructures de recharge, qu'ils accueillent du public ou les véhicules d'une entreprise.",
     points: [
-      "Depuis le 1ᵉʳ janvier 2025, les bâtiments existants ouverts au public dotés d'un parking de plus de 20 places doivent avoir au moins 5 % de places équipées en recharge.",
-      "Les bâtiments tertiaires existants doivent disposer d'au moins une borne par tranche de 20 places.",
-      "Les parkings d'entreprise de plus de 20 places doivent atteindre 20 % de places pré-équipées, dont une accessible aux personnes à mobilité réduite.",
+      "Depuis le 1ᵉʳ janvier 2025, les bâtiments existants ouverts au public dotés d'un parking de plus de 20 places doivent disposer d'au moins 5 % de places équipées en recharge.",
+      "Les bâtiments tertiaires existants doivent installer au moins une borne par tranche de 20 places, dont une accessible aux personnes à mobilité réduite.",
+      "Les parkings d'entreprise de plus de 20 places doivent atteindre 20 % de places pré-équipées, le tableau électrique devant être dimensionné pour absorber cette montée en puissance.",
+      "Les bâtiments neufs ou rénovés de 10 places et plus, dont le permis est postérieur au 11 mars 2021, relèvent de seuils renforcés.",
     ],
+    link: {
+      label: "Consulter la loi LOM (Service-Public)",
+      href: "https://entreprendre.service-public.fr/vosdroits/F35538",
+    },
   },
   {
+    id: "flotte",
     icon: Icons.fleet,
     title: "Verdissement obligatoire des flottes",
     intro:
-      "Au-delà d'un certain nombre de véhicules, votre flotte doit intégrer une part croissante de véhicules à faibles émissions.",
+      "Au-delà d'un seuil de véhicules, votre flotte doit intégrer une part croissante de véhicules à faibles émissions, sous peine de sanction financière.",
     points: [
-      "Les entreprises détenant plus de 100 véhicules légers doivent intégrer 20 % de véhicules à faibles émissions dans le renouvellement de leur parc en 2025.",
-      "Cette part monte à 40 % au 1ᵉʳ janvier 2027, puis 50 % en 2030.",
+      "Les entreprises détenant plus de 100 véhicules légers doivent intégrer 20 % de véhicules à faibles émissions dans le renouvellement de leur parc depuis 2025.",
+      "Cette part progresse à 40 % au 1ᵉʳ janvier 2027, puis 50 % en 2030, avec un suivi déclaratif annuel auprès de l'administration.",
+      "À partir de 2027, seuls les véhicules 100 % électriques ou à hydrogène seront comptabilisés dans le quota.",
       "En cas de non-respect, la loi de finances 2025 prévoit une taxe annuelle incitative pouvant atteindre 5 000 € par véhicule manquant.",
     ],
     danger: true,
+    link: {
+      label: "En savoir plus (Ministère de la Transition écologique)",
+      href: "https://www.ecologie.gouv.fr/politiques-publiques/verdissement-flottes",
+    },
   },
   {
+    id: "ademe",
     icon: Icons.euro,
     title: "Le choix du véhicule et la liste ADEME",
     intro:
-      "Le modèle de véhicule électrique attribué à un collaborateur a un impact fiscal direct, pour le salarié comme pour l'entreprise.",
+      "Le modèle de véhicule électrique attribué à un collaborateur a un impact fiscal direct, pour le salarié comme pour l'entreprise, selon qu'il figure ou non sur la liste ADEME.",
     points: [
-      "Depuis le 1ᵉʳ février 2025, l'avantage en nature d'un véhicule électrique de fonction bénéficie d'un abattement de 70 %, plafonné à 4 582 € par an, à la seule condition que le véhicule figure sur la liste ADEME (score environnemental minimal).",
+      "Depuis le 1ᵉʳ février 2025, l'avantage en nature d'un véhicule électrique de fonction bénéficie d'un abattement de 70 %, plafonné à 4 582 € par an, à la seule condition que le véhicule figure sur la liste ADEME du score environnemental.",
       "Si le véhicule attribué ne figure pas sur cette liste, l'abattement ne s'applique pas et le véhicule est traité fiscalement comme un véhicule thermique.",
       "La conséquence est double : l'avantage en nature imposable du salarié augmente fortement, et l'entreprise supporte des cotisations patronales plus élevées.",
-      "Le score environnemental est figé à la date de mise à disposition du véhicule. Un modèle qui obtient l'éligibilité plus tard ne récupère pas l'abattement.",
+      "Le score est figé à la date de mise à disposition du véhicule. Un modèle qui obtient l'éligibilité plus tard ne récupère pas l'abattement : le choix initial est donc déterminant.",
     ],
     danger: true,
+    link: {
+      label: "Consulter la liste ADEME des véhicules éligibles",
+      href: "https://score-environnemental-bonus.ademe.fr/",
+    },
   },
 ];
 
@@ -64,11 +81,25 @@ function Volet({ v }) {
           </li>
         ))}
       </ul>
+
+      {v.link && (
+        <a
+          href={v.link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-auto inline-flex items-center gap-1.5 pt-5 text-sm font-semibold text-madic-red link-underline"
+        >
+          {v.link.label}
+          <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M7 17L17 7M9 7h8v8" /></svg>
+        </a>
+      )}
     </article>
   );
 }
 
-export default function Regulation() {
+export default function Regulation({ only, title, intro }) {
+  const shown = only ? volets.filter((v) => only.includes(v.id)) : volets;
+  const cols = shown.length === 1 ? "lg:grid-cols-1" : shown.length === 2 ? "lg:grid-cols-2" : "lg:grid-cols-3";
   return (
     <section
       id="reglementation"
@@ -79,20 +110,16 @@ export default function Regulation() {
         <div className="reveal max-w-2xl">
           <p className="section-label text-madic-red">Cadre légal · loi LOM</p>
           <h2 id="reg-title" className="mt-3 text-3xl font-extrabold tracking-tight text-[#16202c] md:text-4xl">
-            Vos obligations réglementaires
+            {title || "Vos obligations réglementaires"}
           </h2>
           <p className="mt-4 text-madic-grey-dark">
-            Qu'il s'agisse d'un parking accueillant du public, d'un parc de stationnement
-            privatif ou d'une flotte de véhicules d'entreprise, les professionnels font face
-            à des obligations qui se renforcent. Elles s'inscrivent dans le cadre de la loi
-            LOM (Loi d'Orientation des Mobilités), complétée par la loi Climat et Résilience,
-            la loi de finances 2025 et les arrêtés relatifs au score environnemental. MADIC
-            vous accompagne sur le volet recharge de votre mise en conformité.
+            {intro ||
+              "Qu'il s'agisse d'un parking accueillant du public, d'un parc de stationnement privatif ou d'une flotte de véhicules d'entreprise, les professionnels font face à des obligations qui se renforcent. Elles s'inscrivent dans le cadre de la loi LOM (Loi d'Orientation des Mobilités), complétée par la loi Climat et Résilience, la loi de finances 2025 et les arrêtés relatifs au score environnemental. MADIC vous accompagne sur le volet recharge de votre mise en conformité."}
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {volets.map((v) => (
+        <div className={`mt-12 grid grid-cols-1 gap-6 ${cols}`}>
+          {shown.map((v) => (
             <Volet key={v.title} v={v} />
           ))}
         </div>

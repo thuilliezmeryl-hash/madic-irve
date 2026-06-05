@@ -3,7 +3,7 @@ const partners = [
   "Sixt", "SNCF", "Keolis", "STEF", "Dachser", "Mercedes-Benz",
   "Stellantis", "Toyota", "TotalEnergies", "Fastned", "Certas Energy",
   "Electra", "Eni", "Repsol", "BP",
-  "Atlante", "Zunder", "Auchan", "Intermarché", "Carrefour", "Super U", "Avia",
+  "Atlante", "Zunder", "Auchan", "Intermarché", "Carrefour", "Super U",
 ];
 
 function PartnerCard({ name }) {
