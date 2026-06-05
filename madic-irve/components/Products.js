@@ -39,10 +39,10 @@ const products = [
   {
     art: "powerunit",
     name: "Pulse DC Power Unit",
-    tag: "Architecture power unit + satellites",
+    tag: "Power unit + satellites",
     power: "Jusqu'à 720 kW",
-    features: ["Unité de puissance centralisée", "Bornes satellites déportées", "Jusqu'à 720 kW", "Hubs haute capacité", "Mutualisation de la puissance"],
-    benefit: "Notre architecture la plus puissante : une unité de puissance alimente plusieurs bornes satellites, pour équiper les hubs à très forte demande tout en optimisant l'investissement.",
+    features: ["Unité de puissance centralisée", "Bornes satellites déportées", "Jusqu'à 720 kW", "Hubs haute capacité"],
+    benefit: "Notre architecture la plus puissante : une unité centrale alimente plusieurs bornes satellites pour les hubs à très forte demande.",
     featured: true,
   },
 ];
@@ -61,9 +61,9 @@ function ProductCard({ p }) {
         </span>
       )}
 
-      <div className="relative h-40 overflow-hidden bg-gradient-to-b from-[#f6f7f9] to-[#eaedf1]">
+      <div className="relative h-32 overflow-hidden bg-gradient-to-b from-[#f6f7f9] to-[#eaedf1]">
         <div className="absolute inset-0 grain opacity-40" />
-        <div className="relative mx-auto h-full w-32 transition-transform duration-500 group-hover:scale-105">
+        <div className="relative mx-auto h-full w-28 transition-transform duration-500 group-hover:scale-105">
           <Art />
         </div>
       </div>
@@ -71,9 +71,9 @@ function ProductCard({ p }) {
       <div className="flex flex-1 flex-col p-5">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-madic-red">{p.tag}</p>
         <h3 className="mt-1 text-xl font-extrabold tracking-tight text-[#16202c]">{p.name}</h3>
-        <p className="mt-1 text-sm font-bold text-madic-grey-dark">{p.power}</p>
+        <p className="mt-0.5 text-sm font-bold text-madic-grey-dark">{p.power}</p>
 
-        <ul className="mt-4 space-y-2">
+        <ul className="mt-3 space-y-1.5">
           {p.features.map((f) => (
             <li key={f} className="flex items-start gap-2 text-sm text-[#3a4654]">
               <Chevron className="mt-0.5 h-3.5 w-3.5 shrink-0" />
@@ -82,11 +82,11 @@ function ProductCard({ p }) {
           ))}
         </ul>
 
-        <p className="mt-4 flex-1 text-sm leading-relaxed text-madic-grey-dark">{p.benefit}</p>
+        <p className="mt-3 flex-1 text-sm leading-relaxed text-madic-grey-dark">{p.benefit}</p>
 
         <a
           href="#contact"
-          className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition-all ${
+          className={`mt-5 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition-all ${
             p.featured
               ? "bg-madic-red text-white hover:bg-madic-red-dark"
               : "border border-madic-grey/40 text-[#16202c] hover:border-madic-red hover:text-madic-red"

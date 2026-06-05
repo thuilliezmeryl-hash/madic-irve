@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import PageHero from "@/components/PageHero";
 import Regulation from "@/components/Regulation";
 import LomSimulator from "@/components/LomSimulator";
+import RevenueSimulator from "@/components/RevenueSimulator";
 import Products from "@/components/Products";
 import Solar from "@/components/Solar";
 import Contact from "@/components/Contact";
@@ -43,6 +44,7 @@ export default function ParkingPublicPage() {
         />
 
         <LomSimulator defaultType="public-existant" />
+        <RevenueSimulator />
 
         <Products />
         <Solar />

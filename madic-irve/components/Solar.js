@@ -18,23 +18,23 @@ function FlowDiagram() {
     { label: "Véhicules", sub: "Flotte électrique", icon: Icons.fleet },
   ];
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm md:p-8">
-      <div className="flex flex-col gap-3 md:flex-row md:items-stretch">
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm md:p-6">
+      <div className="flex flex-col gap-2 md:flex-row md:items-stretch">
         {steps.map((s, i) => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="flex flex-1 items-center gap-3 md:flex-col md:gap-3 md:text-center">
-              <div className="flex flex-1 flex-col items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4 md:flex-1">
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-madic-red/15 text-madic-red">
+            <div key={s.label} className="flex items-center gap-2 md:flex-1 md:flex-col md:gap-2">
+              <div className="flex w-full flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-2 py-4 text-center md:flex-1 md:justify-center">
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-madic-red/15 text-madic-red">
                   <Icon />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-white">{s.label}</p>
-                  <p className="text-xs text-white/50">{s.sub}</p>
+                  <p className="text-sm font-bold leading-tight text-white">{s.label}</p>
+                  <p className="mt-0.5 text-[11px] leading-tight text-white/50">{s.sub}</p>
                 </div>
               </div>
               {i < steps.length - 1 && (
-                <svg className="h-6 w-6 shrink-0 rotate-90 text-madic-red md:rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                <svg className="h-5 w-5 shrink-0 rotate-90 text-madic-red md:rotate-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
                   <path d="M5 12h14M13 6l6 6-6 6" />
                 </svg>
               )}
