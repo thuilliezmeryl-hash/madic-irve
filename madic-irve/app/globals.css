@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Charte MADIC group */
+  --madic-red: #d70926;
+  --madic-red-dark: #ae1022;
+  --madic-grey: #afb6bd;
+  --madic-grey-dark: #808b94;
+  --madic-navy: #002653;
+  --madic-ink: #0a1422;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: #ffffff;
+  color: #16202c;
+  font-feature-settings: "kern" 1, "liga" 1;
+}
+
+/* Focus visible accessible (WCAG) */
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid var(--madic-red);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Chevron MADIC utilisé comme puce de liste (cf. charte p.24) */
+.madic-bullet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+/* Découpe diagonale rouge inspirée des supports MADIC (cartes de visite, roll-ups) */
+.diagonal-clip {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 18% 100%);
+}
+
+.section-label {
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+/* Grain léger pour les fonds sombres (atmosphère industrielle) */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Reveal au scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* Lien souligné élégant */
+.link-underline {
+  background-image: linear-gradient(var(--madic-red), var(--madic-red));
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.link-underline:hover { background-size: 100% 2px; }
