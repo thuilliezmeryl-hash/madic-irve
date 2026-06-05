@@ -34,6 +34,15 @@ const products = [
     power: "Jusqu'à 400 kW",
     features: ["Recharge ultra rapide", "Jusqu'à 400 kW", "Hubs de recharge", "Stations-service", "Fort trafic"],
     benefit: "La puissance HPC pour les hubs de recharge et stations à fort trafic. Quelques minutes suffisent.",
+    featured: false,
+  },
+  {
+    art: "powerunit",
+    name: "Pulse DC Power Unit",
+    tag: "Architecture power unit + satellites",
+    power: "Jusqu'à 720 kW",
+    features: ["Unité de puissance centralisée", "Bornes satellites déportées", "Jusqu'à 720 kW", "Hubs haute capacité", "Mutualisation de la puissance"],
+    benefit: "Notre architecture la plus puissante : une unité de puissance alimente plusieurs bornes satellites, pour équiper les hubs à très forte demande tout en optimisant l'investissement.",
     featured: true,
   },
 ];
@@ -106,7 +115,7 @@ export default function Products() {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p) => (
             <ProductCard key={p.name} p={p} />
           ))}

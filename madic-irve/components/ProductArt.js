@@ -79,4 +79,40 @@ export const productArt = {
   dual: DualArt,
   fast: FastArt,
   hpc: HpcArt,
+  powerunit: PowerUnitArt,
 };
+
+export function PowerUnitArt() {
+  return (
+    <svg viewBox="0 0 200 200" className="h-full w-full" aria-hidden="true">
+      {/* Power Unit centrale (armoire de puissance) */}
+      <rect x="22" y="40" width="58" height="130" rx="10" fill="#0a1422" stroke="#34568c" strokeWidth="2" />
+      <rect x="22" y="40" width="58" height="9" rx="10" fill="#d70926" />
+      <Screen x={32} y={58} w={38} h={30} color="#2bd07a" />
+      <g fill="#2bd07a">
+        <rect x="32" y="96" width="38" height="3" rx="1.5" opacity="0.9" />
+        <rect x="32" y="103" width="28" height="3" rx="1.5" opacity="0.6" />
+        <rect x="32" y="110" width="34" height="3" rx="1.5" opacity="0.5" />
+      </g>
+      <text x="51" y="140" textAnchor="middle" fontSize="11" fontWeight="800" fill="#fff">720</text>
+      <text x="51" y="151" textAnchor="middle" fontSize="6" fill="#2bd07a">kW</text>
+
+      {/* Satellites (bornes de distribution reliées) */}
+      <rect x="116" y="56" width="30" height="50" rx="6" fill="#13203a" stroke="#34568c" strokeWidth="1.5" />
+      <rect x="116" y="56" width="30" height="6" rx="6" fill="#d70926" />
+      <Screen x={122} y={68} w={18} h={14} color="#2bd07a" />
+
+      <rect x="116" y="120" width="30" height="50" rx="6" fill="#13203a" stroke="#34568c" strokeWidth="1.5" />
+      <rect x="116" y="120" width="30" height="6" rx="6" fill="#d70926" />
+      <Screen x={122} y={132} w={18} h={14} color="#2bd07a" />
+
+      {/* Liaisons power unit -> satellites */}
+      <path d="M80 90 C 98 90, 100 80, 116 80" fill="none" stroke="#d70926" strokeWidth="3" strokeLinecap="round" />
+      <path d="M80 120 C 98 120, 100 144, 116 144" fill="none" stroke="#d70926" strokeWidth="3" strokeLinecap="round" />
+
+      {/* Câbles de recharge satellites */}
+      <path d="M146 96 C 168 100, 172 112, 164 122" fill="none" stroke="#808b94" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M146 160 C 168 164, 172 150, 164 140" fill="none" stroke="#808b94" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  );
+}

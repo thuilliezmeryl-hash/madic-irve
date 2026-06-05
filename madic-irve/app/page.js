@@ -5,6 +5,7 @@ import Hero from "@/components/Hero";
 import Partners from "@/components/Partners";
 import Products from "@/components/Products";
 import Benefits from "@/components/Benefits";
+import Regulation from "@/components/Regulation";
 import Solar from "@/components/Solar";
 import Fleet from "@/components/Fleet";
 import ROI from "@/components/ROI";
@@ -21,6 +22,7 @@ export default function Page() {
         <Partners />
         <Products />
         <Benefits />
+        <Regulation />
         <Solar />
         <Fleet />
         <ROI />

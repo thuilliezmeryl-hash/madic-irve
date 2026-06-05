@@ -9,6 +9,7 @@ const benefits = [
   { title: "Facturation automatisée", desc: "Refacturation et reporting sans saisie manuelle." },
   { title: "Conformité réglementaire", desc: "Comptage MID, normes IRVE et obligations respectées." },
   { title: "Accompagnement Advenir", desc: "Optimisation de vos subventions et primes à l'installation." },
+  { title: "Fabrication française", desc: "Bornes conçues et fabriquées en France, labellisées Origine France Garantie." },
 ];
 
 function BenefitCard({ title, desc, index }) {

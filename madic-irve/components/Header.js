@@ -5,6 +5,7 @@ import Logo from "./Logo";
 const links = [
   { href: "#solutions", label: "Solutions" },
   { href: "#benefices", label: "Pourquoi MADIC" },
+  { href: "#reglementation", label: "Réglementation" },
   { href: "#photovoltaique", label: "Photovoltaïque" },
   { href: "#flotte", label: "Gestion de flotte" },
   { href: "#roi", label: "ROI" },

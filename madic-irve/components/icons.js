@@ -34,6 +34,7 @@ export const Icons = {
   shield: () => (<P><path className={base} d="M24 4l16 6v12c0 11-7 18-16 22-9-4-16-11-16-22V10z"/></P>),
   magnet: () => (<P><path className={base} d="M12 6v16a12 12 0 0024 0V6h-8v16a4 4 0 01-8 0V6z"/></P>),
   rfid: () => (<P><rect className={base} x="8" y="12" width="22" height="24" rx="3"/><path className={base} d="M36 16a10 10 0 010 16M40 12a16 16 0 010 24"/></P>),
+  madeInFrance: () => (<P><path className={base} d="M24 4l16 6v12c0 11-7 18-16 22-9-4-16-11-16-22V10z"/><path className={base} d="M24 14l2.5 5 5.5.5-4 4 1 5.5-5-3-5 3 1-5.5-4-4 5.5-.5z"/></P>),
 };
 
 export const benefitIcons = {
@@ -45,4 +46,5 @@ export const benefitIcons = {
   "Facturation automatisée": Icons.billing,
   "Conformité réglementaire": Icons.compliance,
   "Accompagnement Advenir": Icons.advenir,
+  "Fabrication française": Icons.madeInFrance,
 };
