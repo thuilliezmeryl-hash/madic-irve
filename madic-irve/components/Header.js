@@ -8,6 +8,7 @@ const defaultLinks = [
   { href: "/parking-public", label: "Parking public" },
   { href: "/parking-prive-flotte", label: "Privatif & flotte" },
   { href: "/#photovoltaique", label: "Photovoltaïque" },
+  { href: "/espace-client", label: "Espace connecté", highlight: true },
 ];
 
 export default function Header({ links = defaultLinks }) {
@@ -39,9 +40,11 @@ export default function Header({ links = defaultLinks }) {
             <a
               key={l.href}
               href={l.href}
-              className={`link-underline text-sm font-semibold transition-colors ${
-                scrolled ? "text-[#16202c] hover:text-madic-red" : "text-white/90 hover:text-white"
-              }`}
+              className={
+                l.highlight
+                  ? `rounded-full border-2 px-4 py-1.5 text-sm font-bold transition-all ${scrolled ? "border-madic-navy/30 text-madic-navy hover:bg-madic-navy/5" : "border-white/40 text-white hover:bg-white/10"}`
+                  : `link-underline text-sm font-semibold transition-colors ${scrolled ? "text-[#16202c] hover:text-madic-red" : "text-white/90 hover:text-white"}`
+              }
             >
               {l.label}
             </a>
