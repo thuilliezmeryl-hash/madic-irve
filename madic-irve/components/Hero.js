@@ -15,7 +15,7 @@ export default function Hero() {
     >
       {/* Fond dégradé + maille hexagonale décorative */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1a33] via-[#0c1f3d] to-[#0a1422]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1a33] via-[#0c1f3d] to-madic-ink" />
         <div className="absolute -right-32 top-0 h-[640px] w-[640px] rounded-full bg-madic-red/10 blur-3xl" />
         <div className="absolute left-0 top-1/3 h-[420px] w-[420px] rounded-full bg-madic-navy/40 blur-3xl" />
       </div>

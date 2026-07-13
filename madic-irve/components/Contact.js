@@ -10,7 +10,7 @@ const reassurance = [
 export default function Contact() {
   return (
     <section id="contact" className="scroll-mt-24 relative overflow-hidden bg-madic-ink grain py-20 md:py-28" aria-labelledby="contact-title">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0a1a33] via-[#0c1f3d] to-[#0a1422]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0a1a33] via-[#0c1f3d] to-madic-ink" />
       <div className="pointer-events-none absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-madic-red/10 blur-3xl" />
 
       <div className="relative mx-auto grid max-w-content grid-cols-1 gap-12 px-5 md:px-8 lg:grid-cols-[1fr_1.2fr]">
