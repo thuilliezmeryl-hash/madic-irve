@@ -1,4 +1,3 @@
-import HeroVisual from "./HeroVisual";
 import { Chevron } from "./icons";
 
 const stats = [
@@ -73,7 +72,11 @@ export default function Hero() {
         <div className="animate-fadeIn [animation-delay:200ms]">
           <div className="relative">
             <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-tr from-madic-red/20 to-transparent blur-xl" />
-            <HeroVisual className="relative w-full rounded-3xl shadow-2xl ring-1 ring-white/10" />
+            <img
+              src="/photos/hero-madic-irve.webp"
+              alt="Ombrières photovoltaïques MADIC équipées de bornes de recharge, avec un véhicule électrique en charge"
+              className="relative w-full rounded-3xl shadow-2xl ring-1 ring-white/10"
+            />
           </div>
         </div>
       </div>
