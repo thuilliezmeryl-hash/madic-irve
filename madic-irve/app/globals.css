@@ -3,13 +3,30 @@
 @tailwind utilities;
 
 :root {
-  /* Charte MADIC group */
+  /* ---- Couche 1 : primitives (charte MADIC group V4 - 2024) ---- */
   --madic-red: #d70926;
   --madic-red-dark: #ae1022;
   --madic-grey: #afb6bd;
   --madic-grey-dark: #808b94;
   --madic-navy: #002653;
   --madic-ink: #0a1422;
+  --madic-text: #16202c;  /* texte courant (jusqu'ici codé en dur ~46x) */
+  --madic-green: #2bd07a; /* vert succès / revenus (jusqu'ici codé en dur ~13x) */
+  --madic-white: #ffffff;
+
+  /* ---- Couche 2 : sémantique (rôle, pas teinte) ---- */
+  /* Ces alias découplent l'intention des valeurs de marque : un composant
+     référence son ROLE (--color-danger) sans savoir qu'il vaut du rouge MADIC. */
+  --color-primary: var(--madic-red);
+  --color-primary-hover: var(--madic-red-dark);
+  --color-danger: var(--madic-red);
+  --color-success: var(--madic-green);
+  --color-accent: var(--madic-navy);
+  --color-text: var(--madic-text);
+  --color-text-muted: var(--madic-grey-dark);
+  --color-border: var(--madic-grey);
+  --color-surface: var(--madic-white);
+  --color-surface-inverse: var(--madic-ink);
 }
 
 html {
@@ -19,14 +36,14 @@ html {
 }
 
 body {
-  background: #ffffff;
-  color: #16202c;
+  background: var(--color-surface);
+  color: var(--color-text);
   font-feature-settings: "kern" 1, "liga" 1;
 }
 
 /* Focus visible accessible (WCAG) */
 :where(a, button, input, select, textarea):focus-visible {
-  outline: 3px solid var(--madic-red);
+  outline: 3px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 4px;
 }
