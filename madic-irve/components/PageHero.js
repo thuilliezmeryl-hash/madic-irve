@@ -5,7 +5,7 @@ export default function PageHero({ eyebrow, title, highlight, subtitle, points =
   return (
     <section id="top" className="relative overflow-hidden bg-madic-ink grain pt-28 pb-16 md:pt-36 md:pb-24">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1a33] via-[#0c1f3d] to-[#0a1422]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1a33] via-[#0c1f3d] to-madic-ink" />
         <div className="absolute -right-32 top-0 h-[560px] w-[560px] rounded-full bg-madic-red/10 blur-3xl" />
       </div>
 

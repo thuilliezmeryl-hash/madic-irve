@@ -49,7 +49,7 @@ function FlowDiagram() {
 export default function Solar() {
   return (
     <section id="photovoltaique" className="scroll-mt-24 relative overflow-hidden bg-madic-ink grain py-20 md:py-28" aria-labelledby="solar-title">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0c1f3d] via-[#0a1422] to-[#0a1a33]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#0c1f3d] via-madic-ink to-[#0a1a33]" />
       <div className="pointer-events-none absolute -left-20 top-10 h-96 w-96 rounded-full bg-madic-red/10 blur-3xl" />
 
       <div className="relative mx-auto grid max-w-content grid-cols-1 items-center gap-12 px-5 md:px-8 lg:grid-cols-2">
