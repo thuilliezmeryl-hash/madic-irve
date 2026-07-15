@@ -171,11 +171,11 @@ export default function AuthWall({ onAuthenticated }) {
                 <div className="space-y-1.5">
                   <button type="button" onClick={() => { setLoginEmail("commercial@madic.com"); setLoginPassword("madic2024"); }}
                     className="w-full rounded-lg bg-madic-navy/5 px-3 py-2 text-left text-xs font-semibold text-madic-navy hover:bg-madic-navy/10 transition-colors">
-                    🏢 Commercial — commercial@madic.com / madic2024
+                    🏢 Commercial : commercial@madic.com / madic2024
                   </button>
                   <button type="button" onClick={() => { setLoginEmail("demo.client@carrefour.fr"); setLoginPassword("client2024"); }}
                     className="w-full rounded-lg bg-madic-navy/5 px-3 py-2 text-left text-xs font-semibold text-madic-navy hover:bg-madic-navy/10 transition-colors">
-                    🛒 Client — demo.client@carrefour.fr / client2024
+                    🛒 Client : demo.client@carrefour.fr / client2024
                   </button>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export default function AuthWall({ onAuthenticated }) {
                 <Input id="reg-name" placeholder="Marie Dupont" value={regName} onChange={(e) => setRegName(e.target.value)} autoComplete="name" />
               </Field>
               <Field label="Société / Enseigne" id="reg-company" error={regErrors.company}>
-                <Input id="reg-company" placeholder="Carrefour — Site de Lyon" value={regCompany} onChange={(e) => setRegCompany(e.target.value)} autoComplete="organization" />
+                <Input id="reg-company" placeholder="Carrefour, Site de Lyon" value={regCompany} onChange={(e) => setRegCompany(e.target.value)} autoComplete="organization" />
               </Field>
               <Field label="Email professionnel" id="reg-email" error={regErrors.email}>
                 <Input id="reg-email" type="email" placeholder="vous@societe.fr" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} autoComplete="email" />

@@ -4,6 +4,7 @@ import { Chevron } from "./icons";
 const products = [
   {
     art: "walbox",
+    photo: "/photos/pulse-wb-ac.webp",
     name: "WalBox",
     tag: "Recharge AC",
     power: "7 à 22 kW",
@@ -12,6 +13,7 @@ const products = [
   },
   {
     art: "dual",
+    photo: "/photos/pulse-22-gl.webp",
     name: "22GL",
     tag: "Recharge AC · Double point",
     power: "2 × 22 kW",
@@ -20,6 +22,7 @@ const products = [
   },
   {
     art: "fast",
+    photo: "/photos/pulse-20-80.webp",
     name: "Pulse 20-80",
     tag: "Recharge rapide DC",
     power: "20 à 80 kW",
@@ -29,6 +32,7 @@ const products = [
   },
   {
     art: "hpc",
+    photo: "/photos/pulse-200-400.webp",
     name: "Pulse 400",
     tag: "Recharge ultra-rapide DC",
     power: "Jusqu'à 400 kW",
@@ -64,7 +68,11 @@ function ProductCard({ p }) {
       <div className="relative h-32 overflow-hidden bg-gradient-to-b from-[#f6f7f9] to-[#eaedf1]">
         <div className="absolute inset-0 grain opacity-40" />
         <div className="relative mx-auto h-full w-28 transition-transform duration-500 group-hover:scale-105">
-          <Art />
+          {p.photo ? (
+            <img src={p.photo} alt={p.name} className="h-full w-full object-contain" />
+          ) : (
+            <Art />
+          )}
         </div>
       </div>
 

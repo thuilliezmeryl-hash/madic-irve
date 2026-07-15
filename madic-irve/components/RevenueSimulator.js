@@ -183,7 +183,7 @@ export default function RevenueSimulator() {
                 <div className="rounded-xl bg-white/5 p-4 ring-1 ring-white/10">
                   <p className="text-xs text-white/50">Retour sur investissement</p>
                   <p className="mt-1 text-xl font-extrabold text-madic-red">
-                    {isFinite(r.roi) ? `${r.roi.toFixed(1)} ans` : "—"}
+                    {isFinite(r.roi) ? `${r.roi.toFixed(1)} ans` : "n/a"}
                   </p>
                 </div>
               </div>

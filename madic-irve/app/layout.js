@@ -1,7 +1,7 @@
 import "./globals.css";
 import localFont from "next/font/local";
 
-// Montserrat auto-hébergé (typographie institutionnelle MADIC) — aucune dépendance externe.
+// Montserrat auto-hébergé (typographie institutionnelle MADIC), aucune dépendance externe.
 const montserrat = localFont({
   src: [
     { path: "../public/fonts/montserrat-400.woff2", weight: "400", style: "normal" },

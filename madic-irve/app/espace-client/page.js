@@ -5,6 +5,8 @@ import AuthWall from "@/components/AuthWall";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LocationSimulator from "@/components/LocationSimulator";
+import LomSimulator from "@/components/LomSimulator";
+import RevenueSimulator from "@/components/RevenueSimulator";
 import useReveal from "@/components/useReveal";
 
 const ESPACE_LINKS = [
@@ -76,33 +78,9 @@ function EspaceContent() {
         <div id={activeTab === "location" ? "simulateur-location" : activeTab}>
           {activeTab === "location" && <LocationSimulator />}
 
-          {activeTab === "lom" && (
-            <div className="reveal rounded-3xl bg-white p-8 shadow-sm">
-              <p className="section-label text-madic-red">Obligations réglementaires</p>
-              <h2 className="mt-1 text-3xl font-extrabold text-madic-navy">Simulateur Loi LOM</h2>
-              <p className="mt-2 text-sm text-madic-grey-dark">Ce simulateur est disponible directement sur la page principale.</p>
-              <a
-                href="/#simulateur-lom"
-                className="mt-6 inline-block rounded-full bg-madic-navy px-6 py-3 text-sm font-bold text-white hover:bg-madic-navy/90 transition-colors"
-              >
-                Accéder au simulateur LOM →
-              </a>
-            </div>
-          )}
+          {activeTab === "lom" && <LomSimulator />}
 
-          {activeTab === "revenu" && (
-            <div className="reveal rounded-3xl bg-white p-8 shadow-sm">
-              <p className="section-label text-madic-red">Aide à la vente</p>
-              <h2 className="mt-1 text-3xl font-extrabold text-madic-navy">Simulateur ROI & Revenus</h2>
-              <p className="mt-2 text-sm text-madic-grey-dark">Ce simulateur est disponible directement sur la page principale.</p>
-              <a
-                href="/#simulateur-revenus"
-                className="mt-6 inline-block rounded-full bg-madic-navy px-6 py-3 text-sm font-bold text-white hover:bg-madic-navy/90 transition-colors"
-              >
-                Accéder au simulateur ROI →
-              </a>
-            </div>
-          )}
+          {activeTab === "revenu" && <RevenueSimulator />}
         </div>
       </main>
 

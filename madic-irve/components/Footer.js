@@ -84,7 +84,7 @@ export default function Footer() {
         <div className="mx-auto grid max-w-content grid-cols-1 gap-6 px-5 py-8 text-sm text-white/60 md:grid-cols-3 md:px-8">
           <div>
             <p className="font-semibold text-white">Siège</p>
-            <p className="mt-1">8A rue des Bruyères<br />44400 Rezé — France</p>
+            <p className="mt-1">8A rue des Bruyères<br />44400 Rezé, France</p>
           </div>
           <div>
             <p className="font-semibold text-white">Contact IRVE</p>
@@ -102,7 +102,7 @@ export default function Footer() {
 
       {/* Bas de page légal */}
       <div className="mx-auto flex max-w-content flex-col gap-3 px-5 py-6 text-xs text-white/45 md:flex-row md:items-center md:justify-between md:px-8">
-        <p>© {new Date().getFullYear()} MADIC group — Une société de MADIC group. Tous droits réservés.</p>
+        <p>© {new Date().getFullYear()} MADIC group. Une société de MADIC group. Tous droits réservés.</p>
         <nav aria-label="Liens légaux" className="flex flex-wrap gap-x-5 gap-y-2">
           <a href="#" className="hover:text-white">Mentions légales</a>
           <a id="rgpd" href="#" className="hover:text-white">Politique de confidentialité (RGPD)</a>

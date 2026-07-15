@@ -1,4 +1,3 @@
-import HeroVisual from "./HeroVisual";
 import { Chevron } from "./icons";
 
 const stats = [
@@ -20,7 +19,7 @@ export default function Hero() {
         <div className="absolute left-0 top-1/3 h-[420px] w-[420px] rounded-full bg-madic-navy/40 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid max-w-content grid-cols-1 items-center gap-12 px-5 md:px-8 lg:grid-cols-[1.05fr_1fr]">
+      <div className="relative mx-auto grid max-w-content grid-cols-1 items-center gap-12 px-5 md:px-8 lg:grid-cols-[0.8fr_1.3fr]">
         {/* Colonne texte */}
         <div className="animate-fadeUp">
           <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/80">
@@ -71,9 +70,13 @@ export default function Hero() {
 
         {/* Colonne visuel */}
         <div className="animate-fadeIn [animation-delay:200ms]">
-          <div className="relative">
+          <div className="relative lg:scale-110 lg:origin-left xl:scale-[1.18]">
             <div className="absolute -inset-3 rounded-[28px] bg-gradient-to-tr from-madic-red/20 to-transparent blur-xl" />
-            <HeroVisual className="relative w-full rounded-3xl shadow-2xl ring-1 ring-white/10" />
+            <img
+              src="/photos/hero-madic-irve.webp"
+              alt="Ombrières photovoltaïques MADIC équipées de bornes de recharge, avec un véhicule électrique en charge"
+              className="relative w-full rounded-3xl shadow-2xl ring-1 ring-white/10"
+            />
           </div>
         </div>
       </div>
