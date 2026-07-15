@@ -22,7 +22,7 @@ export async function GET(request) {
   const url =
     `https://api.openchargemap.io/v3/poi?output=json&countrycode=FR` +
     `&latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}` +
-    `&distance=${encodeURIComponent(distance)}&distanceunit=KM&maxresults=100&compact=true&verbose=false&key=${key}`;
+    `&distance=${encodeURIComponent(distance)}&distanceunit=KM&maxresults=100&compact=false&verbose=false&key=${key}`;
 
   try {
     const res = await fetch(url, { next: { revalidate: 3600 } });
