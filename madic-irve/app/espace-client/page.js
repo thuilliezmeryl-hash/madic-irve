@@ -26,7 +26,7 @@ function Badge({ role }) {
 function EspaceContent() {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("location");
-  useReveal();
+  useReveal(activeTab);
 
   const tabs = [
     { id: "location", label: "Simulateur Location", icon: "📋", roles: ["client", "commercial"] },
