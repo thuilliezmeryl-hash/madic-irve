@@ -70,7 +70,7 @@ export default function ContactForm() {
       return;
     }
     setStatus("submitting");
-    // Simulation d'envoi — à brancher sur votre endpoint / EmailJS / API
+    // Simulation d'envoi, à brancher sur votre endpoint / EmailJS / API
     setTimeout(() => setStatus("success"), 900);
   };
 

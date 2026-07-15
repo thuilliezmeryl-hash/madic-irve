@@ -31,7 +31,7 @@ export default function Header({ links = defaultLinks }) {
       }`}
     >
       <div className="mx-auto flex max-w-content items-center justify-between px-5 py-3.5 md:px-8">
-        <a href="/" className="flex items-center" aria-label="MADIC — Accueil">
+        <a href="/" className="flex items-center" aria-label="MADIC, Accueil">
           <Logo variant={scrolled ? "color" : "white"} className="text-[34px]" />
         </a>
 

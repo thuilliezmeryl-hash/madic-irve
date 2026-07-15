@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { Chevron } from "./icons";
 
 /**
- * Simulateur Offre Location MADIC — Pulse 80 DC
+ * Simulateur Offre Location MADIC, Pulse 80 DC
  * Données issues de l'offre commerciale Carrefour (mai 2025) :
  *   - Loyer : 800 €/mois HT par borne (48 mois, maint. préventive + curative incluses)
  *   - Supervision Road : 20,80 €/mois HT par borne (hors loyer, à charge du magasin)
@@ -211,7 +211,7 @@ export default function LocationSimulator() {
           Offre Location Pulse 80 DC
         </h2>
         <p className="mt-2 text-sm text-madic-grey-dark">
-          Configurez votre projet en 4 étapes. Estimation non contractuelle — loyer 48 mois, maintenance incluse.
+          Configurez votre projet en 4 étapes. Estimation non contractuelle. Loyer 48 mois, maintenance incluse.
         </p>
       </div>
 
@@ -248,7 +248,7 @@ export default function LocationSimulator() {
       {/* ── Étape 1 : Nombre de bornes ──────────────────────────────────────── */}
       {step === 1 && (
         <Card>
-          <SectionTitle sub="Pulse 80 DC — 2 points de charge par borne — Location 48 mois">
+          <SectionTitle sub="Pulse 80 DC, 2 points de charge par borne, Location 48 mois">
             Nombre de bornes
           </SectionTitle>
 
@@ -286,11 +286,11 @@ export default function LocationSimulator() {
             <p className="mb-3 text-xs font-bold uppercase tracking-wider text-madic-navy">Récapitulatif de la sélection</p>
             <div className="space-y-2 text-sm">
               {[
-                ["Borne", `Pulse 80 DC / 2 PDC — Fabriqué en France`],
+                ["Borne", `Pulse 80 DC / 2 PDC, Fabriqué en France`],
                 ["Points de charge", `${calc.nb * 2} PDC total`],
                 ["Puissance totale", `${calc.nb * 80} kW installés`],
                 ["Loyer location", `${euro(LOYER_BORNE * calc.nb)} / mois HT`],
-                ["Durée", `48 mois — reconduction possible`],
+                ["Durée", `48 mois, reconduction possible`],
               ].map(([k, v]) => (
                 <div key={k} className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5 text-madic-grey-dark">
@@ -307,9 +307,9 @@ export default function LocationSimulator() {
           <div className="mt-4 rounded-2xl border border-green-100 bg-green-50 p-4">
             <p className="mb-2 text-xs font-bold text-green-800">✓ Inclus dans le loyer</p>
             <ul className="space-y-1 text-xs text-green-700">
-              <li>— Maintenance préventive (1 passage/an : filtres, serrage, essais en charge, rapport)</li>
-              <li>— Maintenance curative : déplacement + main-d'œuvre + pièces</li>
-              <li>— MADIC reste propriétaire du matériel</li>
+              <li>•Maintenance préventive (1 passage/an : filtres, serrage, essais en charge, rapport)</li>
+              <li>•Maintenance curative : déplacement + main-d'œuvre + pièces</li>
+              <li>•MADIC reste propriétaire du matériel</li>
             </ul>
             <p className="mt-2 text-xs font-semibold text-amber-700">⚠ Non compris : supervision/interopérabilité Road (20,80 €/mois/borne), sinistres et vandalisme</p>
           </div>
@@ -455,7 +455,7 @@ export default function LocationSimulator() {
                 { label: "Puissance active disponible", value: `${Math.round(calc.puissanceDispoKw)} kW`, note: `${puissanceSouscrite} kVA × ${fp} cos φ` },
                 { label: "Consommation actuelle", value: `${puissanceActuelle} kW`, note: "Pointe magasin" },
                 { label: "Réserve disponible", value: `${Math.round(calc.puissanceRestante)} kW`, note: "Avant bornes", highlight: calc.puissanceRestante < 0 },
-                { label: `Puissance requise — ${calc.nb} borne${calc.nb > 1 ? "s" : ""} Pulse 80`, value: `${calc.puissanceNecessaire} kW`, note: "80 kW / borne" },
+                { label: `Puissance requise : ${calc.nb} borne${calc.nb > 1 ? "s" : ""} Pulse 80`, value: `${calc.puissanceNecessaire} kW`, note: "80 kW / borne" },
               ].map((row) => (
                 <div key={row.label} className="flex items-center justify-between rounded-xl bg-white px-4 py-2.5 shadow-sm">
                   <div>
@@ -483,7 +483,7 @@ export default function LocationSimulator() {
                 </>
               ) : (
                 <>
-                  <p className="font-bold text-red-800">⚠ Puissance insuffisante — augmentation d'abonnement recommandée</p>
+                  <p className="font-bold text-red-800">⚠ Puissance insuffisante : augmentation d'abonnement recommandée</p>
                   <p className="mt-1 text-xs text-red-700">
                     Il manque {Math.round(calc.deficit)} kW. Contactez votre fournisseur d'énergie pour augmenter votre abonnement Tarif Jaune, ou réduisez le nombre de bornes. Un câblage depuis le TGBT avec 60 à 80 kW disponibles par borne est requis.
                   </p>
@@ -576,7 +576,7 @@ export default function LocationSimulator() {
           <div className={`rounded-3xl border p-5 ${calc.compatible ? "border-green-100 bg-green-50" : calc.gestionDynamique ? "border-amber-100 bg-amber-50" : "border-red-100 bg-red-50"}`}>
             <p className={`text-sm font-bold ${calc.compatible ? "text-green-800" : calc.gestionDynamique ? "text-amber-800" : "text-red-800"}`}>
               {calc.compatible ? "✓ Puissance disponible OK" : calc.gestionDynamique ? "⚡ Faisable avec DLM" : "⚠ Révision abonnement nécessaire"}
-              {" "}— Réserve disponible : {Math.round(calc.puissanceRestante)} kW / {calc.puissanceNecessaire} kW requis
+              {" "}· Réserve disponible : {Math.round(calc.puissanceRestante)} kW / {calc.puissanceNecessaire} kW requis
             </p>
           </div>
 
@@ -589,7 +589,7 @@ export default function LocationSimulator() {
           </div>
 
           <p className="text-center text-xs text-madic-grey-dark">
-            Estimation non contractuelle. Prix HT. Basé sur l'offre MADIC Pulse 80 DC — Location 48 mois avec maintenance complète incluse.
+            Estimation non contractuelle. Prix HT. Basé sur l'offre MADIC Pulse 80 DC, Location 48 mois avec maintenance complète incluse.
           </p>
         </div>
       )}

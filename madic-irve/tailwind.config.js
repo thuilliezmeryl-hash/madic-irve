@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // ---- Couche 1 : primitives — charte graphique MADIC group (V4 - 2024) ----
+        // ---- Couche 1 : primitives, charte graphique MADIC group (V4 - 2024) ----
         madic: {
           red: "#d70926",      // Rouge MADIC (Couleur A / Pantone 186 CP)
           "red-dark": "#ae1022", // Rouge ombre chevron (Couleur B / Pantone 187 CP)
@@ -18,7 +18,7 @@ module.exports = {
           navy: "#002653",
           ink: "#0a1422",
         },
-        // ---- Couche 2 : sémantique (rôle) — adossée aux variables CSS de globals.css ----
+        // ---- Couche 2 : sémantique (rôle), adossée aux variables CSS de globals.css ----
         // Utiliser text-primary / bg-success / border-default plutôt que la teinte de marque.
         primary: {
           DEFAULT: "var(--color-primary)",
