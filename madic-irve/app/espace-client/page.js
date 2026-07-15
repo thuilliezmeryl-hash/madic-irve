@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import AuthWall from "@/components/AuthWall";
 import Header from "@/components/Header";
@@ -8,6 +9,16 @@ import LocationSimulator from "@/components/LocationSimulator";
 import LomSimulator from "@/components/LomSimulator";
 import RevenueSimulator from "@/components/RevenueSimulator";
 import useReveal from "@/components/useReveal";
+
+// Leaflet a besoin du navigateur : on charge le module d'étude de site en client-only.
+const EtudeDeSite = dynamic(() => import("@/components/EtudeDeSite"), {
+  ssr: false,
+  loading: () => (
+    <div className="rounded-3xl bg-white p-8 text-center text-sm text-madic-grey-dark shadow-sm">
+      Chargement de la carte…
+    </div>
+  ),
+});
 
 const ESPACE_LINKS = [
   { href: "/", label: "Retour au site" },
@@ -32,6 +43,7 @@ function EspaceContent() {
     { id: "location", label: "Simulateur Location", icon: "📋", roles: ["client", "commercial"] },
     { id: "lom", label: "Loi LOM", icon: "⚖️", roles: ["client", "commercial"] },
     { id: "revenu", label: "ROI & Revenus", icon: "📈", roles: ["commercial"] },
+    { id: "site", label: "Étude de site", icon: "🗺️", roles: ["commercial"] },
   ].filter((t) => t.roles.includes(user?.role));
 
   return (
@@ -81,6 +93,8 @@ function EspaceContent() {
           {activeTab === "lom" && <LomSimulator />}
 
           {activeTab === "revenu" && <RevenueSimulator />}
+
+          {activeTab === "site" && <EtudeDeSite />}
         </div>
       </main>
 
