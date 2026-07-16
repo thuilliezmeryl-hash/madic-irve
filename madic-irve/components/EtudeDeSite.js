@@ -64,6 +64,7 @@ export default function EtudeDeSite() {
   const [chargers, setChargers] = useState([]);
   const [chargersMsg, setChargersMsg] = useState("");
   const [pois, setPois] = useState({ results: [], summary: [], total: 0, avgStayMin: null });
+  const [pop, setPop] = useState(null); // { commune, department, radii: [{ km, population }] }
 
   // Hypothèses de l'entonnoir (toutes modifiables).
   const [traffic, setTraffic] = useState(30000); // véhicules/jour
@@ -133,9 +134,10 @@ export default function EtudeDeSite() {
   const fetchData = async (lat, lon) => {
     setLoadingData(true);
     setChargersMsg("");
-    const [chRes, poiRes] = await Promise.allSettled([
+    const [chRes, poiRes, popRes] = await Promise.allSettled([
       fetch(`/api/chargers?lat=${lat}&lon=${lon}&distance=10`).then((r) => r.json()),
       fetch(`/api/pois?lat=${lat}&lon=${lon}&radius=1500`).then((r) => r.json()),
+      fetch(`/api/population?lat=${lat}&lon=${lon}`).then((r) => r.json()),
     ]);
     if (chRes.status === "fulfilled") {
       setChargers(chRes.value.results || []);
@@ -154,6 +156,8 @@ export default function EtudeDeSite() {
     } else {
       setPois({ results: [], summary: [], total: 0, avgStayMin: null });
     }
+    if (popRes.status === "fulfilled" && !popRes.value.error) setPop(popRes.value);
+    else setPop(null);
     setLoadingData(false);
   };
 
@@ -196,12 +200,20 @@ export default function EtudeDeSite() {
 
   // --- Score + calcul économique ---
   const calc = useMemo(() => {
+    const pop10 = pop?.radii?.find((r) => r.km === 10)?.population || 0;
     const trafficScore = Math.min(traffic / 50000, 1) * 100;
+    const populationScore = Math.min(pop10 / 200000, 1) * 100;
     const commerceScore = Math.min(pois.total / 40, 1) * 100;
     const competitionScore = Math.max(0, 1 - chargers.length / 20) * 100;
     const accessScore = access;
+    const stationScore = pois.avgStayMin ? Math.min(pois.avgStayMin / 90, 1) * 100 : 0;
     const score = Math.round(
-      0.35 * trafficScore + 0.25 * commerceScore + 0.25 * competitionScore + 0.15 * accessScore
+      0.3 * trafficScore +
+        0.15 * populationScore +
+        0.15 * commerceScore +
+        0.2 * competitionScore +
+        0.1 * accessScore +
+        0.1 * stationScore
     );
 
     const sessionsDay = traffic * (pctVE / 100) * (pctNeed / 100) * (pctChoose / 100);
@@ -215,7 +227,7 @@ export default function EtudeDeSite() {
     const roi = marginYear > 0 ? capex / marginYear : Infinity;
 
     return { score, sessionsDay, kwhYear, caYear, marginYear, capex, roi };
-  }, [traffic, pctVE, pctNeed, pctChoose, kwhSession, priceSell, priceBuy, access, pois.total, chargers.length, modelId, qty]);
+  }, [traffic, pctVE, pctNeed, pctChoose, kwhSession, priceSell, priceBuy, access, pois.total, pois.avgStayMin, pop, chargers.length, modelId, qty]);
 
   const r = rating(calc.score);
 
@@ -292,6 +304,21 @@ export default function EtudeDeSite() {
                   <p className="text-[11px] text-madic-grey-dark">commerces (1,5 km)</p>
                 </div>
               </div>
+              {pop && (
+                <div className="rounded-xl bg-madic-grey/5 p-3 text-center">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-madic-grey-dark">Population</p>
+                  <p className="mt-1 text-sm text-[#16202c]">
+                    <strong>{num(pop.radii.find((r) => r.km === 5)?.population || 0)}</strong> à 5 km ·{" "}
+                    <strong>{num(pop.radii.find((r) => r.km === 10)?.population || 0)}</strong> à 10 km ·{" "}
+                    <strong>{num(pop.radii.find((r) => r.km === 20)?.population || 0)}</strong> à 20 km
+                  </p>
+                  {pop.commune && (
+                    <p className="mt-0.5 text-[11px] text-madic-grey-dark">
+                      Commune : {pop.commune.nom} ({num(pop.commune.population)} hab.)
+                    </p>
+                  )}
+                </div>
+              )}
               {chargersMsg && <p className="text-[11px] italic text-amber-700">{chargersMsg}</p>}
               {pois.summary.length > 0 && (
                 <p className="text-[11px] text-madic-grey-dark">
