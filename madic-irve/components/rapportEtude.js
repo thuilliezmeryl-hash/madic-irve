@@ -10,22 +10,39 @@ const num = (n) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).
 const esc = (s) =>
   String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-// Schéma de situation dessiné en SVG à partir des coordonnées (site + concurrents),
-// sans tuiles externes : imprimable et sans problème de CORS.
-function schemaSVG(d) {
-  const size = 300;
+// Fléchon hexagonal MADIC (repris de components/icons.js), en blanc sur le repère.
+const CHEVRON = "M9 5 L17 12 L9 19 L6 19 L13 12 L6 5 Z";
+
+/**
+ * Schéma de situation : vraie carte OpenStreetMap en fond (assemblée par
+ * /api/staticmap, les tuiles n'étant pas capturables depuis le navigateur),
+ * surmontée d'un calque SVG (rayons, concurrents, site) calé sur l'échelle
+ * réelle de la carte au zoom choisi.
+ */
+function schemaBlock(d) {
+  const size = 320;
+  const zoom = 10;
   const cx = size / 2;
   const cy = size / 2;
   const R = 10000; // rayon représenté : 10 km
-  const mToPx = (size / 2 - 14) / R;
+
+  // Échelle exacte des tuiles OSM au zoom donné, pour que le calque colle au fond.
+  const mPerPx = (156543.03392 * Math.cos((d.lat * Math.PI) / 180)) / Math.pow(2, zoom);
+  const mToPx = 1 / mPerPx;
   const cos = Math.cos((d.lat * Math.PI) / 180);
 
   const rings = [5000, 10000]
-    .map((r) => `<circle cx="${cx}" cy="${cy}" r="${(r * mToPx).toFixed(1)}" fill="none" stroke="#c9d2dd" stroke-width="1" stroke-dasharray="3 3"/>`)
+    .map(
+      (r) =>
+        `<circle cx="${cx}" cy="${cy}" r="${(r * mToPx).toFixed(1)}" fill="none" stroke="#16202c" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="4 3"/>`
+    )
     .join("");
-  const ringLabels =
-    `<text x="${cx}" y="${(cy - 5000 * mToPx - 2).toFixed(1)}" font-size="8" fill="#9aa4b0" text-anchor="middle">5 km</text>` +
-    `<text x="${cx}" y="${(cy - 10000 * mToPx + 9).toFixed(1)}" font-size="8" fill="#9aa4b0" text-anchor="middle">10 km</text>`;
+  const ringLabels = [5000, 10000]
+    .map(
+      (r) =>
+        `<text x="${cx}" y="${(cy - r * mToPx - 3).toFixed(1)}" font-size="8" font-weight="700" fill="#16202c" fill-opacity="0.6" text-anchor="middle">${r / 1000} km</text>`
+    )
+    .join("");
 
   const dots = (d.chargers || [])
     .filter((c) => c.lat && c.lon)
@@ -38,12 +55,20 @@ function schemaSVG(d) {
       const ratio = c.maxKw > 0 ? c.maxKw / (d.modelKw || 80) : null;
       const color = ratio === null ? "#94a3b8" : ratio >= 0.7 ? "#dc2626" : ratio >= 0.3 ? "#f59e0b" : "#94a3b8";
       const rr = Math.max(2.5, Math.min(7, 2.5 + (c.maxKw || 0) / 70));
-      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rr.toFixed(1)}" fill="${color}" fill-opacity="0.9" stroke="#fff" stroke-width="0.8"/>`;
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rr.toFixed(1)}" fill="${color}" fill-opacity="0.95" stroke="#fff" stroke-width="1"/>`;
     })
     .join("");
 
-  const site = `<circle cx="${cx}" cy="${cy}" r="6" fill="#d70926" stroke="#fff" stroke-width="2"/>`;
-  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><rect width="${size}" height="${size}" rx="6" fill="#f7f8fa"/>${rings}${ringLabels}${dots}${site}</svg>`;
+  // Repère du site : point rouge MADIC + fléchon blanc par-dessus.
+  const site =
+    `<circle cx="${cx}" cy="${cy}" r="11" fill="#d70926" stroke="#fff" stroke-width="2.5"/>` +
+    `<g transform="translate(${cx - 7},${cy - 7}) scale(0.583)"><path d="${CHEVRON}" fill="#fff"/></g>`;
+
+  const mapUrl = `/api/staticmap?lat=${d.lat}&lon=${d.lon}&zoom=${zoom}&size=${size}`;
+  return `<div style="position:relative;width:${size}px;height:${size}px;flex:0 0 auto">
+    <img src="${mapUrl}" width="${size}" height="${size}" alt="Carte du site" style="position:absolute;left:0;top:0;border-radius:6px;border:1px solid #e3e7ee">
+    <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="position:absolute;left:0;top:0" xmlns="http://www.w3.org/2000/svg">${rings}${ringLabels}${dots}${site}</svg>
+  </div>`;
 }
 
 export function ouvrirRapport(d) {
@@ -77,7 +102,8 @@ export function ouvrirRapport(d) {
 <style>
   * { box-sizing: border-box; margin: 0; }
   @page { size: A4; margin: 14mm 13mm; }
-  body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: #16202c; font-size: 10.5pt; line-height: 1.45; }
+  body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; color: #16202c; font-size: 10.5pt; line-height: 1.45;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #d70926; padding-bottom: 4mm; margin-bottom: 5mm; }
   .head h1 { font-size: 16pt; letter-spacing: -0.01em; }
   .head .brand { font-size: 13pt; font-weight: 800; color: #d70926; text-align: right; }
@@ -155,7 +181,7 @@ export function ouvrirRapport(d) {
 
   <h2>Schéma de situation</h2>
   <div style="display:flex; gap:6mm; align-items:center">
-    ${schemaSVG(d)}
+    ${schemaBlock(d)}
     <div style="font-size:9pt; color:#5c6672; line-height:1.7">
       <div><span style="color:#d70926; font-size:12pt">&#9679;</span> Site étudié</div>
       <div><span style="color:#dc2626; font-size:12pt">&#9679;</span> Concurrent direct (puissance comparable)</div>

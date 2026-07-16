@@ -256,10 +256,18 @@ export default function EtudeDeSite() {
         .bindPopup(`<b>${c.title}</b><br>${c.operator}<br>${c.points} pt(s) · ${c.maxKw || "?"} kW<br><i>${niveau}</i>`);
     });
 
-    // Site étudié : gros repère MADIC, au-dessus de tout.
-    L.circleMarker([lat, lon], { radius: 12, color: "#ffffff", weight: 4, fillColor: "#d70926", fillOpacity: 1 })
-      .addTo(group)
-      .bindPopup("Site étudié");
+    // Site étudié : point rouge MADIC surmonté du fléchon blanc, au-dessus de tout.
+    const siteIcon = L.divIcon({
+      className: "",
+      iconSize: [34, 34],
+      iconAnchor: [17, 17],
+      html:
+        `<div style="width:34px;height:34px;border-radius:50%;background:#d70926;border:3px solid #fff;` +
+        `box-shadow:0 2px 6px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center">` +
+        `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">` +
+        `<path d="M9 5 L17 12 L9 19 L6 19 L13 12 L6 5 Z" fill="#fff"/></svg></div>`,
+    });
+    L.marker([lat, lon], { icon: siteIcon, zIndexOffset: 1000 }).addTo(group).bindPopup("Site étudié");
   }, [selected, chargers, pois, modelId]);
 
   // --- Calcul économique + score ---
