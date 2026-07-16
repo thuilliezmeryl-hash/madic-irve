@@ -77,7 +77,8 @@ export async function GET(request) {
       const plon = el.lon ?? el.center?.lon;
       if (plat == null || plon == null) continue;
       counts[cat.key] = (counts[cat.key] || 0) + 1;
-      stayWeighted += cat.stayMin;
+      // Plafond à 180 min : évite que les hôtels (nuitée) gonflent la moyenne.
+      stayWeighted += Math.min(cat.stayMin, 180);
       results.push({
         lat: plat,
         lon: plon,

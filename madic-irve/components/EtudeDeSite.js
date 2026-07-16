@@ -224,6 +224,8 @@ export default function EtudeDeSite() {
     group.clearLayers();
 
     const { lat, lon } = selected;
+    const myKw = (MODELS.find((m) => m.id === modelId) || MODELS[0]).kw;
+
     // Rayons 5 / 10 / 20 km
     [
       { r: 5000, color: "#eab308" },
@@ -233,25 +235,32 @@ export default function EtudeDeSite() {
       L.circle([lat, lon], { radius: r, color, weight: 1, fill: false, dashArray: "4 4", opacity: 0.5 }).addTo(group)
     );
 
-    // Point sélectionné
-    L.circleMarker([lat, lon], { radius: 9, color: "#0a1422", weight: 3, fillColor: "#d70926", fillOpacity: 1 })
-      .addTo(group)
-      .bindPopup("Site étudié");
-
-    // Bornes concurrentes (rouge)
-    chargers.forEach((c) =>
-      L.circleMarker([c.lat, c.lon], { radius: 6, color: "#b91c1c", weight: 1, fillColor: "#ef4444", fillOpacity: 0.8 })
-        .addTo(group)
-        .bindPopup(`<b>${c.title}</b><br>${c.operator}<br>${c.points} pt(s) · ${c.maxKw || "?"} kW`)
-    );
-
-    // Commerces (violet)
+    // Commerces (violet, petits) — dessous
     pois.results.forEach((p) =>
-      L.circleMarker([p.lat, p.lon], { radius: 4, color: "#7c3aed", weight: 1, fillColor: "#a78bfa", fillOpacity: 0.8 })
+      L.circleMarker([p.lat, p.lon], { radius: 3.5, color: "#7c3aed", weight: 1, fillColor: "#a78bfa", fillOpacity: 0.75 })
         .addTo(group)
         .bindPopup(`${p.categoryLabel}${p.name ? " · " + p.name : ""}`)
     );
-  }, [selected, chargers, pois]);
+
+    // Bornes concurrentes : couleur selon la puissance face au projet, taille selon la puissance.
+    chargers.forEach((c) => {
+      const ratio = c.maxKw > 0 ? c.maxKw / myKw : null;
+      let color, niveau;
+      if (ratio === null) { color = "#94a3b8"; niveau = "puissance inconnue"; }
+      else if (ratio >= 0.7) { color = "#dc2626"; niveau = "concurrent direct"; }
+      else if (ratio >= 0.3) { color = "#f59e0b"; niveau = "concurrent partiel"; }
+      else { color = "#94a3b8"; niveau = "bien plus lent"; }
+      const radius = Math.max(4, Math.min(12, 4 + (c.maxKw || 0) / 45));
+      L.circleMarker([c.lat, c.lon], { radius, color: "#ffffff", weight: 1.5, fillColor: color, fillOpacity: 0.9 })
+        .addTo(group)
+        .bindPopup(`<b>${c.title}</b><br>${c.operator}<br>${c.points} pt(s) · ${c.maxKw || "?"} kW<br><i>${niveau}</i>`);
+    });
+
+    // Site étudié : gros repère MADIC, au-dessus de tout.
+    L.circleMarker([lat, lon], { radius: 12, color: "#ffffff", weight: 4, fillColor: "#d70926", fillOpacity: 1 })
+      .addTo(group)
+      .bindPopup("Site étudié");
+  }, [selected, chargers, pois, modelId]);
 
   // --- Calcul économique + score ---
   const calc = useMemo(() => {
@@ -349,10 +358,12 @@ export default function EtudeDeSite() {
         <div>
           <div ref={containerRef} className="h-[460px] w-full overflow-hidden rounded-2xl ring-1 ring-madic-grey/20" />
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-madic-grey-dark">
-            <span><span className="inline-block h-2 w-2 rounded-full bg-madic-red align-middle" /> Site</span>
-            <span><span className="inline-block h-2 w-2 rounded-full bg-red-500 align-middle" /> Bornes concurrentes</span>
+            <span><span className="inline-block h-3 w-3 rounded-full border border-white bg-madic-red align-middle shadow" /> Site</span>
+            <span><span className="inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ backgroundColor: "#dc2626" }} /> Concurrent direct</span>
+            <span><span className="inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ backgroundColor: "#f59e0b" }} /> Concurrent partiel</span>
+            <span><span className="inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ backgroundColor: "#94a3b8" }} /> Plus lent</span>
             <span><span className="inline-block h-2 w-2 rounded-full bg-violet-400 align-middle" /> Commerces</span>
-            <span>Cercles : 5 / 10 / 20 km</span>
+            <span>Taille = puissance · Cercles : 5 / 10 / 20 km</span>
           </div>
         </div>
 
@@ -480,6 +491,7 @@ export default function EtudeDeSite() {
                     priceSell,
                     priceBuy,
                     modelName: (MODELS.find((m) => m.id === modelId) || MODELS[0]).name,
+                    modelKw: (MODELS.find((m) => m.id === modelId) || MODELS[0]).kw,
                     qty: Math.max(1, Number(qty || 1)),
                   })
                 }

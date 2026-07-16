@@ -10,6 +10,42 @@ const num = (n) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).
 const esc = (s) =>
   String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+// Schéma de situation dessiné en SVG à partir des coordonnées (site + concurrents),
+// sans tuiles externes : imprimable et sans problème de CORS.
+function schemaSVG(d) {
+  const size = 300;
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = 10000; // rayon représenté : 10 km
+  const mToPx = (size / 2 - 14) / R;
+  const cos = Math.cos((d.lat * Math.PI) / 180);
+
+  const rings = [5000, 10000]
+    .map((r) => `<circle cx="${cx}" cy="${cy}" r="${(r * mToPx).toFixed(1)}" fill="none" stroke="#c9d2dd" stroke-width="1" stroke-dasharray="3 3"/>`)
+    .join("");
+  const ringLabels =
+    `<text x="${cx}" y="${(cy - 5000 * mToPx - 2).toFixed(1)}" font-size="8" fill="#9aa4b0" text-anchor="middle">5 km</text>` +
+    `<text x="${cx}" y="${(cy - 10000 * mToPx + 9).toFixed(1)}" font-size="8" fill="#9aa4b0" text-anchor="middle">10 km</text>`;
+
+  const dots = (d.chargers || [])
+    .filter((c) => c.lat && c.lon)
+    .map((c) => {
+      const dx = (c.lon - d.lon) * cos * 111320;
+      const dy = (c.lat - d.lat) * 110540;
+      if (Math.hypot(dx, dy) > R) return "";
+      const x = cx + dx * mToPx;
+      const y = cy - dy * mToPx;
+      const ratio = c.maxKw > 0 ? c.maxKw / (d.modelKw || 80) : null;
+      const color = ratio === null ? "#94a3b8" : ratio >= 0.7 ? "#dc2626" : ratio >= 0.3 ? "#f59e0b" : "#94a3b8";
+      const rr = Math.max(2.5, Math.min(7, 2.5 + (c.maxKw || 0) / 70));
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rr.toFixed(1)}" fill="${color}" fill-opacity="0.9" stroke="#fff" stroke-width="0.8"/>`;
+    })
+    .join("");
+
+  const site = `<circle cx="${cx}" cy="${cy}" r="6" fill="#d70926" stroke="#fff" stroke-width="2"/>`;
+  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg"><rect width="${size}" height="${size}" rx="6" fill="#f7f8fa"/>${rings}${ringLabels}${dots}${site}</svg>`;
+}
+
 export function ouvrirRapport(d) {
   const dateStr = new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
   const r = d.rating;
@@ -80,7 +116,7 @@ export function ouvrirRapport(d) {
       <h1>Étude de site &mdash; recharge électrique</h1>
       <div class="meta">Rapport généré le ${dateStr}</div>
     </div>
-    <div class="brand">MADIC<small>Solutions IRVE</small></div>
+    <img id="logo" src="/logos/madic-group-quadri.png" alt="MADIC" style="height:12mm;width:auto">
   </div>
 
   <div class="site">
@@ -116,6 +152,18 @@ export function ouvrirRapport(d) {
     <tr><td>Bornes concurrentes (10 km)</td><td><strong>${(d.chargers || []).length}</strong>${d.directCompetitors != null ? " · dont <strong>" + d.directCompetitors + "</strong> de puissance comparable au projet" : ""}</td><td>OpenChargeMap</td></tr>
   </table>
   ${poiCells ? `<div style="margin-top:2mm">${poiCells}</div>` : ""}
+
+  <h2>Schéma de situation</h2>
+  <div style="display:flex; gap:6mm; align-items:center">
+    ${schemaSVG(d)}
+    <div style="font-size:9pt; color:#5c6672; line-height:1.7">
+      <div><span style="color:#d70926; font-size:12pt">&#9679;</span> Site étudié</div>
+      <div><span style="color:#dc2626; font-size:12pt">&#9679;</span> Concurrent direct (puissance comparable)</div>
+      <div><span style="color:#f59e0b; font-size:12pt">&#9679;</span> Concurrent partiel</div>
+      <div><span style="color:#94a3b8; font-size:12pt">&#9679;</span> Borne plus lente</div>
+      <div style="margin-top:2mm; font-size:8pt">Taille des points proportionnelle à la puissance. Cercles : 5 et 10 km.</div>
+    </div>
+  </div>
 
   <h2>Concurrence à proximité</h2>
   ${
