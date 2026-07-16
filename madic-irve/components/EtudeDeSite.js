@@ -31,6 +31,7 @@ const euro = (n) =>
     isFinite(n) ? n : 0
   );
 const num = (n) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(isFinite(n) ? n : 0);
+const fmtDist = (m) => (m < 1000 ? `${m} m` : `${(m / 1000).toFixed(1)} km`);
 
 function rating(score) {
   if (score >= 85) return { label: "Excellent investissement", color: "#16a34a", emoji: "🟢" };
@@ -65,6 +66,7 @@ export default function EtudeDeSite() {
   const [chargersMsg, setChargersMsg] = useState("");
   const [pois, setPois] = useState({ results: [], summary: [], total: 0, avgStayMin: null });
   const [pop, setPop] = useState(null); // { commune, department, radii: [{ km, population }] }
+  const [trafficInfo, setTrafficInfo] = useState(null); // { route, tmja, pctPL, distanceM, autofilled }
 
   // Hypothèses de l'entonnoir (toutes modifiables).
   const [traffic, setTraffic] = useState(30000); // véhicules/jour
@@ -134,10 +136,11 @@ export default function EtudeDeSite() {
   const fetchData = async (lat, lon) => {
     setLoadingData(true);
     setChargersMsg("");
-    const [chRes, poiRes, popRes] = await Promise.allSettled([
+    const [chRes, poiRes, popRes, trafRes] = await Promise.allSettled([
       fetch(`/api/chargers?lat=${lat}&lon=${lon}&distance=10`).then((r) => r.json()),
       fetch(`/api/pois?lat=${lat}&lon=${lon}&radius=1500`).then((r) => r.json()),
       fetch(`/api/population?lat=${lat}&lon=${lon}`).then((r) => r.json()),
+      fetch(`/api/traffic?lat=${lat}&lon=${lon}`).then((r) => r.json()),
     ]);
     if (chRes.status === "fulfilled") {
       setChargers(chRes.value.results || []);
@@ -158,6 +161,14 @@ export default function EtudeDeSite() {
     }
     if (popRes.status === "fulfilled" && !popRes.value.error) setPop(popRes.value);
     else setPop(null);
+    if (trafRes.status === "fulfilled" && trafRes.value.nearest) {
+      const n = trafRes.value.nearest;
+      const autofilled = n.distanceM <= 2000;
+      if (autofilled) setTraffic(n.tmja);
+      setTrafficInfo({ ...n, autofilled });
+    } else {
+      setTrafficInfo(null);
+    }
     setLoadingData(false);
   };
 
@@ -315,6 +326,20 @@ export default function EtudeDeSite() {
                   {pop.commune && (
                     <p className="mt-0.5 text-[11px] text-madic-grey-dark">
                       Commune : {pop.commune.nom} ({num(pop.commune.population)} hab.)
+                    </p>
+                  )}
+                </div>
+              )}
+              {trafficInfo && (
+                <div className="rounded-xl bg-madic-grey/5 p-3">
+                  {trafficInfo.autofilled ? (
+                    <p className="text-sm text-[#16202c]">
+                      🚗 <strong>Trafic auto : {num(trafficInfo.tmja)} véh./j</strong>
+                      <span className="text-madic-grey-dark"> ({trafficInfo.route}, à {fmtDist(trafficInfo.distanceM)}) · source Cerema</span>
+                    </p>
+                  ) : (
+                    <p className="text-sm text-madic-grey-dark">
+                      🚗 Aucun axe majeur compté à proximité (le plus proche : {trafficInfo.route} à {fmtDist(trafficInfo.distanceM)}). Trafic à saisir à la main.
                     </p>
                   )}
                 </div>
