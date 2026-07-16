@@ -41,6 +41,49 @@ function rating(score) {
   return { label: "Peu rentable", color: "#dc2626", emoji: "🔴" };
 }
 
+/**
+ * Champ d'entonnoir à double saisie liée : pourcentage OU nombre de véhicules/jour.
+ * `base` est l'effectif de l'étape précédente (ex. trafic pour le % de VE) ;
+ * modifier l'un des deux champs recalcule l'autre.
+ */
+function FunnelField({ label, baseLabel, pct, onPct, base }) {
+  const count = Math.round((Number(base) || 0) * (Number(pct) || 0) / 100);
+  const pctShown = Math.round((Number(pct) || 0) * 100) / 100;
+  return (
+    <div className="block">
+      <span className="mb-1 block text-[11px] font-semibold text-[#16202c]">{label}</span>
+      <div className="flex gap-1.5">
+        <div className="flex min-w-0 flex-1 items-center rounded-lg border border-madic-grey/40 bg-white focus-within:border-madic-red">
+          <input
+            type="number"
+            min="0"
+            max="100"
+            step="0.1"
+            value={pctShown}
+            onChange={(e) => onPct(Number(e.target.value))}
+            className="w-full min-w-0 rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none"
+          />
+          <span className="px-1.5 text-[11px] text-madic-grey-dark">%</span>
+        </div>
+        <div className="flex min-w-0 flex-1 items-center rounded-lg border border-madic-grey/40 bg-white focus-within:border-madic-red">
+          <input
+            type="number"
+            min="0"
+            value={count}
+            onChange={(e) => {
+              const b = Number(base) || 0;
+              onPct(b > 0 ? (Number(e.target.value) / b) * 100 : 0);
+            }}
+            className="w-full min-w-0 rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none"
+          />
+          <span className="whitespace-nowrap px-1.5 text-[11px] text-madic-grey-dark">véh./j</span>
+        </div>
+      </div>
+      <span className="mt-0.5 block text-[10px] text-madic-grey-dark">{baseLabel}</span>
+    </div>
+  );
+}
+
 function Field({ label, children, suffix }) {
   return (
     <label className="block">
@@ -459,15 +502,27 @@ export default function EtudeDeSite() {
           <Field label="Trafic" suffix="véh./j">
             <input type="number" min="0" value={traffic} onChange={(e) => setTraffic(Number(e.target.value))} className="w-full rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none" />
           </Field>
-          <Field label="Véhicules électriques" suffix="%">
-            <input type="number" min="0" step="1" value={pctVE} onChange={(e) => setPctVE(Number(e.target.value))} className="w-full rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none" />
-          </Field>
-          <Field label="Ont besoin de recharge" suffix="%">
-            <input type="number" min="0" step="1" value={pctNeed} onChange={(e) => setPctNeed(Number(e.target.value))} className="w-full rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none" />
-          </Field>
-          <Field label="Choisissent la station" suffix="%">
-            <input type="number" min="0" step="1" value={pctChoose} onChange={(e) => setPctChoose(Number(e.target.value))} className="w-full rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none" />
-          </Field>
+          <FunnelField
+            label="Véhicules électriques"
+            baseLabel="% du trafic"
+            pct={pctVE}
+            onPct={setPctVE}
+            base={traffic}
+          />
+          <FunnelField
+            label="Ont besoin de recharge"
+            baseLabel="% des véhicules électriques"
+            pct={pctNeed}
+            onPct={setPctNeed}
+            base={(Number(traffic) || 0) * (Number(pctVE) || 0) / 100}
+          />
+          <FunnelField
+            label="Choisissent la station"
+            baseLabel="% de ceux qui ont besoin (= sessions/jour)"
+            pct={pctChoose}
+            onPct={setPctChoose}
+            base={(Number(traffic) || 0) * (Number(pctVE) || 0) / 100 * (Number(pctNeed) || 0) / 100}
+          />
           <Field label="kWh par session" suffix="kWh">
             <input type="number" min="0" value={kwhSession} onChange={(e) => setKwhSession(Number(e.target.value))} className="w-full rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none" />
           </Field>
