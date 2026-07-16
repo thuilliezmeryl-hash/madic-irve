@@ -19,12 +19,12 @@ import { ouvrirRapport } from "./rapportEtude";
 
 const FRANCE = { lat: 46.6, lon: 2.4, zoom: 6 };
 
-// Modèles de borne (capex indicatif, points de charge).
+// Modèles de borne (capex indicatif, points de charge, puissance par point).
 const MODELS = [
-  { id: "walbox", name: "WalBox AC", price: 4000, points: 1 },
-  { id: "22gl", name: "22GL", price: 12000, points: 2 },
-  { id: "pulse2080", name: "Pulse 20-80", price: 30000, points: 2 },
-  { id: "pulse400", name: "Pulse 400", price: 150000, points: 2 },
+  { id: "walbox", name: "WalBox AC", price: 4000, points: 1, kw: 22 },
+  { id: "22gl", name: "22GL", price: 12000, points: 2, kw: 22 },
+  { id: "pulse2080", name: "Pulse 20-80", price: 30000, points: 2, kw: 80 },
+  { id: "pulse400", name: "Pulse 400", price: 150000, points: 2, kw: 400 },
 ];
 
 const euro = (n) =>
@@ -35,9 +35,9 @@ const num = (n) => new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).
 const fmtDist = (m) => (m < 1000 ? `${m} m` : `${(m / 1000).toFixed(1)} km`);
 
 function rating(score) {
-  if (score >= 85) return { label: "Excellent investissement", color: "#16a34a", emoji: "🟢" };
-  if (score >= 70) return { label: "Bon potentiel", color: "#ca8a04", emoji: "🟡" };
-  if (score >= 50) return { label: "À étudier", color: "#ea580c", emoji: "🟠" };
+  if (score >= 80) return { label: "Excellent investissement", color: "#16a34a", emoji: "🟢" };
+  if (score >= 65) return { label: "Bon potentiel", color: "#ca8a04", emoji: "🟡" };
+  if (score >= 45) return { label: "À étudier", color: "#ea580c", emoji: "🟠" };
   return { label: "Peu rentable", color: "#dc2626", emoji: "🔴" };
 }
 
@@ -210,36 +210,65 @@ export default function EtudeDeSite() {
     );
   }, [selected, chargers, pois]);
 
-  // --- Score + calcul économique ---
+  // --- Calcul économique + score ---
   const calc = useMemo(() => {
-    const pop10 = pop?.radii?.find((r) => r.km === 10)?.population || 0;
-    const trafficScore = Math.min(traffic / 50000, 1) * 100;
-    const populationScore = Math.min(pop10 / 200000, 1) * 100;
-    const commerceScore = Math.min(pois.total / 40, 1) * 100;
-    const competitionScore = Math.max(0, 1 - chargers.length / 20) * 100;
-    const accessScore = access;
-    const stationScore = pois.avgStayMin ? Math.min(pois.avgStayMin / 90, 1) * 100 : 0;
-    const score = Math.round(
-      0.3 * trafficScore +
-        0.15 * populationScore +
-        0.15 * commerceScore +
-        0.2 * competitionScore +
-        0.1 * accessScore +
-        0.1 * stationScore
-    );
+    const model = MODELS.find((m) => m.id === modelId) || MODELS[0];
 
+    // Économie (calculée d'abord : le ROI alimente le score).
     const sessionsDay = traffic * (pctVE / 100) * (pctNeed / 100) * (pctChoose / 100);
     const kwhYear = sessionsDay * 365 * Number(kwhSession || 0);
     const caYear = kwhYear * Number(priceSell || 0);
     const energyCost = kwhYear * Number(priceBuy || 0);
     const opex = caYear * 0.12; // maintenance + supervision indicatifs (12 % du CA)
     const marginYear = caYear - energyCost - opex;
-    const model = MODELS.find((m) => m.id === modelId) || MODELS[0];
     const capex = model.price * Math.max(1, Number(qty || 1));
     const roi = marginYear > 0 ? capex / marginYear : Infinity;
 
-    return { score, sessionsDay, kwhYear, caYear, marginYear, capex, roi };
-  }, [traffic, pctVE, pctNeed, pctChoose, kwhSession, priceSell, priceBuy, access, pois.total, pois.avgStayMin, pop, chargers.length, modelId, qty]);
+    // Concurrence pondérée par la puissance : une borne bien plus lente que le
+    // modèle installé (ex. 22 kW face à du 400 kW DC) n'est pas un vrai concurrent.
+    let effectiveCompetition = 0;
+    let directCompetitors = 0;
+    for (const c of chargers) {
+      const ratio = c.maxKw > 0 ? c.maxKw / model.kw : null;
+      let w;
+      if (ratio === null) w = 0.3; // puissance inconnue : demi-doute
+      else if (ratio >= 0.7) w = 1; // comparable ou supérieure : concurrent direct
+      else if (ratio >= 0.3) w = 0.5; // intermédiaire : concurrent partiel
+      else w = 0.1; // beaucoup plus lente : quasi négligeable
+      if (w === 1) directCompetitors++;
+      effectiveCompetition += w;
+    }
+
+    // Score /100 : critères saturants à des seuils réalistes.
+    const sat = (v, cap) => Math.min(v / cap, 1) * 100;
+    const pop10 = pop?.radii?.find((r) => r.km === 10)?.population || 0;
+    const trafficScore = sat(traffic, 40000); // plein dès 40 000 véh./j
+    const populationScore = sat(pop10, 50000); // plein dès 50 000 hab. à 10 km
+    const commerceScore = sat(pois.total, 30);
+    const competitionScore = Math.max(0, 1 - effectiveCompetition / 15) * 100;
+    const accessScore = access;
+    const stationScore = pois.avgStayMin ? sat(pois.avgStayMin, 60) : 50; // neutre si inconnu
+    const roiScore = !isFinite(roi)
+      ? 0
+      : roi <= 1
+        ? 100
+        : roi <= 3
+          ? 100 - (roi - 1) * 20 // 1 an -> 100, 3 ans -> 60
+          : roi <= 8
+            ? 60 - (roi - 3) * 10 // 3 ans -> 60, 8 ans -> 10
+            : 10;
+    const score = Math.round(
+      0.25 * trafficScore +
+        0.2 * roiScore +
+        0.15 * competitionScore +
+        0.1 * populationScore +
+        0.1 * commerceScore +
+        0.1 * accessScore +
+        0.1 * stationScore
+    );
+
+    return { score, directCompetitors, sessionsDay, kwhYear, caYear, marginYear, capex, roi };
+  }, [traffic, pctVE, pctNeed, pctChoose, kwhSession, priceSell, priceBuy, access, pois.total, pois.avgStayMin, pop, chargers, modelId, qty]);
 
   const r = rating(calc.score);
 
@@ -310,6 +339,11 @@ export default function EtudeDeSite() {
                 <div className="rounded-xl bg-madic-grey/5 p-3">
                   <p className="text-2xl font-extrabold text-[#16202c]">{chargers.length}</p>
                   <p className="text-[11px] text-madic-grey-dark">bornes concurrentes (10 km)</p>
+                  {chargers.length > 0 && (
+                    <p className="text-[11px] font-semibold text-madic-red">
+                      dont {calc.directCompetitors} de puissance comparable
+                    </p>
+                  )}
                 </div>
                 <div className="rounded-xl bg-madic-grey/5 p-3">
                   <p className="text-2xl font-extrabold text-[#16202c]">{pois.total}</p>
@@ -395,6 +429,7 @@ export default function EtudeDeSite() {
                     poisSummary: pois.summary,
                     avgStayMin: pois.avgStayMin,
                     chargers,
+                    directCompetitors: calc.directCompetitors,
                     pctVE,
                     pctNeed,
                     pctChoose,
