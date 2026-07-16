@@ -113,7 +113,7 @@ export function ouvrirRapport(d) {
     <tr><td>Trafic routier</td><td><strong>${num(d.traffic)} véh./jour</strong>${d.trafficAuto ? " (" + esc(d.trafficRoute) + ")" : " (saisie manuelle)"}</td><td>${d.trafficAuto ? "Comptage Cerema / data.gouv.fr" : "Estimation utilisateur"}</td></tr>
     <tr><td>Population</td><td><strong>${num(d.pop5)}</strong> à 5 km · <strong>${num(d.pop10)}</strong> à 10 km · <strong>${num(d.pop20)}</strong> à 20 km</td><td>geo.api.gouv.fr</td></tr>
     <tr><td>Commerces (1,5 km)</td><td><strong>${d.poisTotal}</strong>${d.avgStayMin ? " · stationnement moyen &asymp; " + d.avgStayMin + " min" : ""}</td><td>OpenStreetMap</td></tr>
-    <tr><td>Bornes concurrentes (10 km)</td><td><strong>${(d.chargers || []).length}</strong></td><td>OpenChargeMap</td></tr>
+    <tr><td>Bornes concurrentes (10 km)</td><td><strong>${(d.chargers || []).length}</strong>${d.directCompetitors != null ? " · dont <strong>" + d.directCompetitors + "</strong> de puissance comparable au projet" : ""}</td><td>OpenChargeMap</td></tr>
   </table>
   ${poiCells ? `<div style="margin-top:2mm">${poiCells}</div>` : ""}
 
