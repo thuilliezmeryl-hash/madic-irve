@@ -2,16 +2,21 @@
 // ?lat=..&lon=..&radius=metres (defaut 1500)
 
 // Categories détectées et leur temps de stationnement indicatif (minutes).
+// « nwr » (node + way + relation) : les grandes surfaces (Intermarché, Décathlon,
+// McDonald's…) sont presque toujours cartographiées comme des bâtiments (way),
+// pas comme des points — une requête « node » seule les rate.
 const CATEGORIES = [
-  { key: "restaurant", label: "Restaurants", stayMin: 75, filter: 'node["amenity"="restaurant"]' },
-  { key: "fast_food", label: "Restauration rapide", stayMin: 25, filter: 'node["amenity"="fast_food"]' },
-  { key: "cafe", label: "Cafés", stayMin: 30, filter: 'node["amenity"="cafe"]' },
-  { key: "supermarket", label: "Supermarchés", stayMin: 45, filter: 'node["shop"="supermarket"]' },
-  { key: "mall", label: "Centres commerciaux", stayMin: 90, filter: 'node["shop"="mall"]' },
-  { key: "hotel", label: "Hôtels", stayMin: 600, filter: 'node["tourism"="hotel"]' },
-  { key: "cinema", label: "Cinémas", stayMin: 120, filter: 'node["amenity"="cinema"]' },
-  { key: "fitness", label: "Salles de sport", stayMin: 75, filter: 'node["leisure"="fitness_centre"]' },
-  { key: "fuel", label: "Stations-service", stayMin: 15, filter: 'node["amenity"="fuel"]' },
+  { key: "restaurant", label: "Restaurants", stayMin: 75, filter: 'nwr["amenity"="restaurant"]' },
+  { key: "fast_food", label: "Restauration rapide", stayMin: 25, filter: 'nwr["amenity"="fast_food"]' },
+  { key: "cafe", label: "Cafés", stayMin: 30, filter: 'nwr["amenity"="cafe"]' },
+  { key: "supermarket", label: "Supermarchés", stayMin: 45, filter: 'nwr["shop"="supermarket"]' },
+  { key: "mall", label: "Centres commerciaux", stayMin: 90, filter: 'nwr["shop"="mall"]' },
+  { key: "diy", label: "Bricolage / jardinage", stayMin: 60, filter: 'nwr["shop"~"^(doityourself|garden_centre)$"]' },
+  { key: "sports_shop", label: "Magasins de sport", stayMin: 60, filter: 'nwr["shop"="sports"]' },
+  { key: "hotel", label: "Hôtels", stayMin: 600, filter: 'nwr["tourism"="hotel"]' },
+  { key: "cinema", label: "Cinémas", stayMin: 120, filter: 'nwr["amenity"="cinema"]' },
+  { key: "fitness", label: "Salles de sport", stayMin: 75, filter: 'nwr["leisure"="fitness_centre"]' },
+  { key: "fuel", label: "Stations-service", stayMin: 15, filter: 'nwr["amenity"="fuel"]' },
 ];
 
 export async function GET(request) {
@@ -59,6 +64,8 @@ export async function GET(request) {
         if (c.key === "cafe") return tags.amenity === "cafe";
         if (c.key === "supermarket") return tags.shop === "supermarket";
         if (c.key === "mall") return tags.shop === "mall";
+        if (c.key === "diy") return tags.shop === "doityourself" || tags.shop === "garden_centre";
+        if (c.key === "sports_shop") return tags.shop === "sports";
         if (c.key === "hotel") return tags.tourism === "hotel";
         if (c.key === "cinema") return tags.amenity === "cinema";
         if (c.key === "fitness") return tags.leisure === "fitness_centre";
