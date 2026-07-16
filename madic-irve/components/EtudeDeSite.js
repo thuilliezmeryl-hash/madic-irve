@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { ouvrirRapport } from "./rapportEtude";
 
 /**
  * Module « Étude de site » (P0) — aide à la vente IRVE.
@@ -368,6 +369,47 @@ export default function EtudeDeSite() {
                   ≈ {num(calc.sessionsDay)} session(s)/jour · marge {euro(calc.marginYear)}/an · investissement {euro(calc.capex)}
                 </p>
               </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  ouvrirRapport({
+                    siteLabel: selected.label,
+                    lat: selected.lat,
+                    lon: selected.lon,
+                    communeNom: pop?.commune?.nom || null,
+                    score: calc.score,
+                    rating: r,
+                    caYear: calc.caYear,
+                    marginYear: calc.marginYear,
+                    sessionsDay: calc.sessionsDay,
+                    roi: calc.roi,
+                    capex: calc.capex,
+                    traffic,
+                    trafficAuto: !!trafficInfo?.autofilled,
+                    trafficRoute: trafficInfo?.route || "",
+                    pop5: pop?.radii?.find((x) => x.km === 5)?.population || 0,
+                    pop10: pop?.radii?.find((x) => x.km === 10)?.population || 0,
+                    pop20: pop?.radii?.find((x) => x.km === 20)?.population || 0,
+                    poisTotal: pois.total,
+                    poisSummary: pois.summary,
+                    avgStayMin: pois.avgStayMin,
+                    chargers,
+                    pctVE,
+                    pctNeed,
+                    pctChoose,
+                    kwhSession,
+                    priceSell,
+                    priceBuy,
+                    modelName: (MODELS.find((m) => m.id === modelId) || MODELS[0]).name,
+                    qty: Math.max(1, Number(qty || 1)),
+                  })
+                }
+                disabled={loadingData}
+                className="w-full rounded-full bg-madic-navy px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-madic-navy/90 disabled:opacity-50"
+              >
+                📄 Générer le rapport PDF
+              </button>
             </>
           )}
         </div>
