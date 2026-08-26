@@ -123,6 +123,20 @@ export default function EtudeDeSite() {
   const [access, setAccess] = useState(60); // accessibilité 0-100 (saisie manuelle P0)
   const [modelId, setModelId] = useState("pulse2080");
   const [qty, setQty] = useState(2);
+  // Investissement : null = montant automatique (prix du modèle × quantité),
+  // sinon montant saisi à la main (remise, génie civil, options…).
+  const [capexOverride, setCapexOverride] = useState(null);
+
+  // Montant proposé automatiquement par le catalogue.
+  const autoCapex = useMemo(() => {
+    const m = MODELS.find((x) => x.id === modelId) || MODELS[0];
+    return m.price * Math.max(1, Number(qty || 1));
+  }, [modelId, qty]);
+
+  // Changer de modèle ou de quantité rétablit le montant catalogue.
+  useEffect(() => {
+    setCapexOverride(null);
+  }, [modelId, qty]);
 
   // --- Initialisation de la carte (une seule fois) ---
   useEffect(() => {
@@ -281,7 +295,7 @@ export default function EtudeDeSite() {
     const energyCost = kwhYear * Number(priceBuy || 0);
     const opex = caYear * 0.12; // maintenance + supervision indicatifs (12 % du CA)
     const marginYear = caYear - energyCost - opex;
-    const capex = model.price * Math.max(1, Number(qty || 1));
+    const capex = capexOverride !== null ? Math.max(0, Number(capexOverride) || 0) : autoCapex;
     const roi = marginYear > 0 ? capex / marginYear : Infinity;
 
     // Concurrence pondérée par la puissance : une borne bien plus lente que le
@@ -328,9 +342,10 @@ export default function EtudeDeSite() {
     );
 
     return { score, directCompetitors, sessionsDay, kwhYear, caYear, marginYear, capex, roi };
-  }, [traffic, pctVE, pctNeed, pctChoose, kwhSession, priceSell, priceBuy, access, pois.total, pois.avgStayMin, pop, chargers, modelId, qty]);
+  }, [traffic, pctVE, pctNeed, pctChoose, kwhSession, priceSell, priceBuy, access, pois.total, pois.avgStayMin, pop, chargers, modelId, autoCapex, capexOverride]);
 
   const r = rating(calc.score);
+  const currentModel = MODELS.find((m) => m.id === modelId) || MODELS[0];
 
   return (
     <div className="rounded-3xl bg-white p-5 shadow-sm md:p-6">
@@ -463,6 +478,7 @@ export default function EtudeDeSite() {
                 </div>
                 <p className="mt-2 text-xs text-white/60">
                   ≈ {num(calc.sessionsDay)} session(s)/jour · marge {euro(calc.marginYear)}/an · investissement {euro(calc.capex)}
+                  {capexOverride !== null && " (saisi)"}
                 </p>
               </div>
 
@@ -501,6 +517,7 @@ export default function EtudeDeSite() {
                     modelName: (MODELS.find((m) => m.id === modelId) || MODELS[0]).name,
                     modelKw: (MODELS.find((m) => m.id === modelId) || MODELS[0]).kw,
                     qty: Math.max(1, Number(qty || 1)),
+                    capexCustom: capexOverride !== null,
                   })
                 }
                 disabled={loadingData}
@@ -564,6 +581,36 @@ export default function EtudeDeSite() {
           <Field label="Nombre de bornes">
             <input type="number" min="1" value={qty} onChange={(e) => setQty(Number(e.target.value))} className="w-full rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none" />
           </Field>
+          <div className="block">
+            <span className="mb-1 flex items-center justify-between gap-1 text-[11px] font-semibold text-[#16202c]">
+              Investissement total
+              {capexOverride !== null && (
+                <button
+                  type="button"
+                  onClick={() => setCapexOverride(null)}
+                  className="text-[10px] font-bold text-madic-red hover:underline"
+                >
+                  ↺ auto
+                </button>
+              )}
+            </span>
+            <div className="flex items-center rounded-lg border border-madic-grey/40 bg-white focus-within:border-madic-red">
+              <input
+                type="number"
+                min="0"
+                step="500"
+                value={capexOverride !== null ? capexOverride : autoCapex}
+                onChange={(e) => setCapexOverride(Number(e.target.value))}
+                className="w-full min-w-0 rounded-lg bg-transparent px-2.5 py-2 text-sm outline-none"
+              />
+              <span className="px-2 text-[11px] text-madic-grey-dark">€</span>
+            </div>
+            <span className="mt-0.5 block text-[10px] text-madic-grey-dark">
+              {capexOverride !== null
+                ? `Montant saisi · catalogue : ${euro(autoCapex)}`
+                : `Auto : ${currentModel.name} × ${Math.max(1, Number(qty || 1))}`}
+            </span>
+          </div>
         </div>
       </div>
 

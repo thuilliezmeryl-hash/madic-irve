@@ -165,7 +165,7 @@ export function ouvrirRapport(d) {
     <div class="card dark">
       <div class="lbl">Retour sur investissement</div>
       <div class="big roi">${isFinite(d.roi) ? d.roi.toFixed(1) + " ans" : "n/a"}</div>
-      <div class="sub">Investissement ${euro(d.capex)} (${esc(d.modelName)} &times; ${d.qty})</div>
+      <div class="sub">Investissement ${euro(d.capex)} (${d.capexCustom ? "montant saisi" : esc(d.modelName) + " &times; " + d.qty})</div>
     </div>
   </div>
 
@@ -211,6 +211,7 @@ export function ouvrirRapport(d) {
     <div><div class="k">Prix de revente</div><div class="v">${String(d.priceSell).replace(".", ",")} €/kWh</div></div>
     <div><div class="k">Prix d'achat élec.</div><div class="v">${String(d.priceBuy).replace(".", ",")} €/kWh</div></div>
     <div><div class="k">Matériel</div><div class="v">${esc(d.modelName)} &times; ${d.qty}</div></div>
+    <div><div class="k">Investissement</div><div class="v">${euro(d.capex)}${d.capexCustom ? " (saisi)" : " (catalogue)"}</div></div>
   </div>
 
   <div class="disc">
